@@ -152,5 +152,8 @@
       }
     }
   },
-  "defaultProject": "ngs-wyy"
+  "defaultProject": "ngs-wyy",
+  "cli": {
+    "analytics": "f796d763-027a-4aed-a8be-d3ff89fbad0f"
+  }
 }
