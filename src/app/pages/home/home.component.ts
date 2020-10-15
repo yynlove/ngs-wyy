@@ -1,7 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ɵConsole } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NzCarouselComponent } from 'ng-zorro-antd/carousel';
-import { Banner, HotTag, SongSheet } from 'src/app/services/data-types/common.type';
+import { map } from 'rxjs/internal/operators';
+import { Banner, HotTag, Singer, SongSheet } from 'src/app/services/data-types/common.type';
 import { HomeService } from 'src/app/services/home.service';
+import { SingerService } from 'src/app/services/singer.service';
 
 @Component({
   selector: 'app-home',
@@ -14,34 +17,46 @@ export class HomeComponent implements OnInit {
   banners:Banner[];
   hotTags:HotTag[];
   songSheetList:SongSheet[];
+  singers:Singer[];
 
   @ViewChild(NzCarouselComponent,{static:true}) private nzCarousel:NzCarouselComponent;
 
-  constructor(private homeServie:HomeService) {
-    this.getBanners();
-    this.getHotTags();
-    this.getPersonalSheetList();
-   }
+  constructor(private route :ActivatedRoute) {
 
-   getBanners(){
-    this.homeServie.getBanners().subscribe(banners=>{
-      this.banners = banners;
+    this.route.data.pipe(map(res=>res.homeDatas)).subscribe(([banners,hotTags,songSheet,singers])=>{
+      this.banners= banners;
+      this.hotTags= hotTags;
+      this.songSheetList= songSheet;
+      this.singers= singers;
     })
+
    }
 
+  //  getBanners(){
+  //   this.homeServie.getBanners().subscribe(banners=>{
+  //     this.banners = banners;
+  //   })
+  //  }
 
-   getHotTags(){
-    this.homeServie.getHotTags().subscribe(hotTahs=>{
-      this.hotTags = hotTahs;
-    })
-   }
 
-   getPersonalSheetList(){
-     this.homeServie.getPersonalSheetList().subscribe(songSheet=>{
-      this.songSheetList = songSheet;
-    })
-   }
+  //  getHotTags(){
+  //   this.homeServie.getHotTags().subscribe(hotTahs=>{
+  //     this.hotTags = hotTahs;
+  //   })
+  //  }
 
+  //  getPersonalSheetList(){
+  //    this.homeServie.getPersonalSheetList().subscribe(songSheet=>{
+  //     this.songSheetList = songSheet;
+  //   })
+  //  }
+
+
+  //  getEnterSingers(){
+  //    this.singerService.getEnterSingers().subscribe(singers=>{
+  //      this.singers=singers;
+  //    })
+  //  }
 
 
    onChangeSlide(type:string){
