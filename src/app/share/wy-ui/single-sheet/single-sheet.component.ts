@@ -18,6 +18,7 @@ export class SingleSheetComponent implements OnInit {
   }
 
   playSheet(id:number){
+    console.log("点击了");
     this.onPlay.emit(id);
   }
 }

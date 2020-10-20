@@ -51,3 +51,9 @@ export type SongSheet = {
   tracks:Song[];
 }
 
+
+//歌曲播放路径
+export type SongUrl ={
+  id:number;
+  url:string;
+}
