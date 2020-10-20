@@ -70,11 +70,10 @@ export class HomeComponent implements OnInit {
       this.carouselActiveIndex = to;
    }
 
-
    onPlaySheet(id:number){
-     console.log("onPlaySheet:"+id);
-     this.sheetService.getSongSheetDetail(id).subscribe(res=>{
-       console.log("res:",res)
+
+    this.sheetService.playSheet(id).subscribe(res =>{
+       console.log("onPlaySheet:",res)
      });
    }
 

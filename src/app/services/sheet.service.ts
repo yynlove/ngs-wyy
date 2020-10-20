@@ -23,7 +23,8 @@ export class SheetService {
 
 
   playSheet(id:number):Observable<Song[]>{
-    return this.getSongSheetDetail(id).pipe(pluck('tracks'),switchMap(tracks=>this.songService.getSongList(tracks)));
+    return this.getSongSheetDetail(id)
+    .pipe(pluck('tracks'),switchMap(tracks => this.songService.getSongList(tracks)));
 
   }
 

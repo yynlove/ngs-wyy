@@ -8,7 +8,7 @@ import { WyPlayerModule } from './wy-player/wy-player.module';
 @NgModule({
   declarations: [
     SingleSheetComponent,
-    PlayCountPipe,
+    PlayCountPipe
   ],
   imports: [
     WyPlayerModule
