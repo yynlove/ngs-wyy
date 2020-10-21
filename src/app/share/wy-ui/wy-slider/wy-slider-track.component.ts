@@ -17,7 +17,7 @@ export class WySliderTrackComponent implements OnInit,OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['wyOfwyLengthfset']){
+    if(changes['wyLength']){
       if(this.wyVertical){
         this.style.height = this.wyLength +'%';
         this.style.left = null;
@@ -28,7 +28,7 @@ export class WySliderTrackComponent implements OnInit,OnChanges {
         this.style.width = this.wyLength +'%';;
       }
     }
-    throw new Error('Method not implemented.');
+
   }
 
   ngOnInit(): void {

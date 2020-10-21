@@ -1,3 +1,4 @@
+
 import { Observable } from 'rxjs'
 
 export type WySliderStyle={
@@ -21,3 +22,6 @@ export type SliderEventObserverCOnfig ={
   moveResolved$?:Observable<number>;
   end$?:Observable<Event>;
 }
+
+
+export type SliderValue = number | null;

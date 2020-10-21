@@ -40,12 +40,12 @@ export class SongService {
     const res = [];
     songsArr.forEach(song=>{
       const url =  urls.find(url=>url.id === song.id).url;
+      
       if(url){
         res.push({...song,url});
       }
     })
     return res;
-
   }
 
 }
