@@ -14,7 +14,9 @@ export class HomeResolverService implements Resolve<HomeDataType> {
   constructor(private homeServie:HomeService,private singerService:SingerService) {}
 
   resolve():Observable<HomeDataType> {
-
+    /**
+     * forkJoin 把所有对象产生的最后一个数据合并给下游唯一的数据
+     */
     return forkJoin([
       this.homeServie.getBanners(),
       this.homeServie.getHotTags(),
