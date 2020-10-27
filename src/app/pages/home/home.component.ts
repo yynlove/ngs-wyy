@@ -21,9 +21,13 @@ export class HomeComponent implements OnInit {
   singers:Singer[];
 
   @ViewChild(NzCarouselComponent,{static:true}) private nzCarousel:NzCarouselComponent;
-
+  /**
+   *
+   * @param ActivatedRoute 包含与当前组件相关的路由信息。ActivatedRoute 也可用于遍历路由器的状态树
+   * @param sheetService
+   */
   constructor(private route :ActivatedRoute,private sheetService:SheetService) {
-
+    //从路由中获取数据 并赋值
     this.route.data.pipe(map(res=>res.homeDatas)).subscribe(([banners,hotTags,songSheet,singers])=>{
       this.banners= banners;
       this.hotTags= hotTags;

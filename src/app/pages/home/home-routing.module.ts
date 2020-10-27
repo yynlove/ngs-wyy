@@ -5,6 +5,9 @@ import { HomeResolverService } from './home-roselver.service';
 import { HomeComponent } from './home.component';
 
 const routes: Routes = [
+  /**
+   * Resolve: 预先获取组件数据
+   */
   {path:'home',component:HomeComponent,data:{title:'发现'},resolve:{homeDatas:HomeResolverService}}
 ];
 
