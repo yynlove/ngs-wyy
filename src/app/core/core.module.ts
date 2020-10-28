@@ -28,10 +28,15 @@ registerLocaleData(zh);
     ShareModule,
     AppRoutingModule,
   ],
+    /** 配置 ng-zorro-antd 国际化 **/
   providers: [{ provide: NZ_I18N, useValue: zh_CN }],
 })
-export class CoreModule { 
+export class CoreModule {
 
+  /**
+   * @skipSelf 使用父组件的值
+   * @Optional 防止为null 报错
+   */
   constructor(@SkipSelf() @Optional() parentModule:CoreModule){
     if(parentModule){
       throw new  Error('CoreModule只能被AppModule引入')
