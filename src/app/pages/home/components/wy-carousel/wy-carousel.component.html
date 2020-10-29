@@ -1,6 +1,7 @@
 <div class="carousel">
   <div class="wrap">
     <i nz-icon class="arrow left" nzType="left" nzTheme="outline" (click)="onChangeSlide('pre')"></i>
+    <!-- ng-content 占位符 将父组件该组件中的内容映射到这个地方-->
     <ng-content></ng-content>
     <ng-template #dot let-number>
      <i class="dot" [class.active]="activeIndex === number" ></i>

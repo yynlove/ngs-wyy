@@ -11,7 +11,7 @@ export type WySliderStyle={
 }
 
 
-export type SliderEventObserverCOnfig ={
+export type SliderEventObserverConfig ={
   start:string;
   move:string;
   end:string;
