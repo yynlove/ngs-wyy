@@ -10,7 +10,7 @@ import { CoreModule } from './core/core.module';
   imports: [
     CoreModule
   ],
- 
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

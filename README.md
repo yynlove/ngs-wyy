@@ -33,4 +33,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## 样式和组件
 ### ng add ng-zorro-antd
+
 ### npm i minireset.css
+
+###   @ngrx/store
+>npm install @ngrx/store --save
+>npm install @ngrx/store-devtools --save  需要安装Redux DevTools 插件

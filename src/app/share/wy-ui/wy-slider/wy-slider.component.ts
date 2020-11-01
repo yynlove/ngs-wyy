@@ -15,6 +15,7 @@ import { SliderEventObserverConfig, SliderValue } from './wy-slider-type';
   encapsulation:ViewEncapsulation.None,
   changeDetection:ChangeDetectionStrategy.OnPush,
   providers:[{
+    //自定义表单注入Token
     provide:NG_VALUE_ACCESSOR,
     useExisting: forwardRef(()=>WySliderComponent),
     multi:true
@@ -25,22 +26,21 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
 
   private sliderDom :HTMLDivElement;
   //滑块横 竖 false=横向
-  @Input() 
-  wyVertical = false;
-  
-  @Input() 
-  wyMin =0;
-  
-  @Input() 
-  wyMax =100;
+  @Input() wyVertical = false;
+
+  @Input() wyMin =0;
+
+  @Input() bufferOffset:number;
+
+  @Input() wyMax =100;
 
 
   /**
    * ElementRef 对视图中某个原生元素的包装器。
-   * ViewChild 属性装饰器，用于配置一个视图查询。 变更检测器会在视图的 DOM 中查找能匹配上该选择器的第一个元素或指令。 
+   * ViewChild 属性装饰器，用于配置一个视图查询。 变更检测器会在视图的 DOM 中查找能匹配上该选择器的第一个元素或指令。
    *            如果视图的 DOM 发生了变化，出现了匹配该选择器的新的子节点，该属性就会被更新。
    */
-  @ViewChild('wySlider' , { static: true}) 
+  @ViewChild('wySlider' , { static: true})
   private wySlider : ElementRef;
 
   //滑块是否滑动 true 是否滑动
@@ -59,7 +59,7 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
   private dragEnd_ :Subscription | null;
 
   /**
-   * 
+   *
    * @param doc  @Inject() 指定自定义提供者自定义提供者让你可以为隐式依赖提供一个具体的实现
    * @param cdr  提供变更检测功能
    */
@@ -138,10 +138,10 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
     //滑块（左, 上）端点位置
     const sliderStart = this.getSliderStartPosition();
     //滑块当前位置 / 总长
-    const  ratio = limitNumberInRange((position - sliderStart)/sliderLength,0,1) 
+    const  ratio = limitNumberInRange((position - sliderStart)/sliderLength,0,1)
     const  retioTrue = this.wyVertical ? 1-ratio :ratio;
     return retioTrue * (this.wyMax - this.wyMin) + this.wyMin;
-  
+
   }
 
   /**
@@ -159,11 +159,11 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
     return this.wyVertical?this.sliderDom.clientHeight:this.sliderDom.clientWidth;
   }
 
-  
+
 
   /**
    * 订阅 事件
-   * @param events 
+   * @param events
    */
   private subcribeDrag(events:string[] = ['start','move','end']){
     if(isArray(events,'start')  && this.dragStarts$ && !this.dragStarts_){
@@ -179,7 +179,7 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
 
   /**
    * 取消订阅
-   * @param events 
+   * @param events
    */
   private unsubcribeDrag(events:string[] = ['start','move','end']){
     if(isArray(events,'start')  && this.dragStarts_){
@@ -195,7 +195,7 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
       this.dragEnd_ = null;
     }
   }
-  
+
 
   private onDragStart(value:number){
     console.log("onDragStart:",value);
@@ -203,7 +203,7 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
     this.toggleDragMoving(true);
     this.setValue(value,false);
   }
-  
+
   private onDragMove(value:number){
     if(this.isDragging){
       this.setValue(value,false);
@@ -213,7 +213,7 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
       this.cdr.markForCheck();
     }
   }
-  
+
 
   private onDragEnd(){
     this.toggleDragMoving(false);
@@ -223,22 +223,28 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
 
 
   /**
-   * 绑定和解绑  鼠标移动和抬起事件 
+   * 绑定和解绑  鼠标移动和抬起事件
    * @param movable 是否滑动
    */
   toggleDragMoving(movable:boolean) {
     this.isDragging = movable;
-    if(movable){ 
+    if(movable){
       this.subcribeDrag(['move','end']);
     }else{
       this.unsubcribeDrag(['move','end']);
     }
-    
-  }
-  
 
-  setValue(value: number,needCheck:boolean) {
+  }
+
+
+  /**
+   *
+   * @param value
+   * @param needCheck传进来的值是否需要检测
+   */
+  setValue(value: number,needCheck:boolean =false) {
     if(needCheck){
+      //拖拽不检测
       if(this.isDragging) return;
       this.value = this.formatValue(value);
       this.updateTrackAndHandles();
@@ -255,7 +261,7 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
       res = this.wyMin;
     }else{
       res = limitNumberInRange(value,this.wyMin,this.wyMax);
-    } 
+    }
     return res;
   }
   //判断是不是NAN
@@ -292,7 +298,7 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
   /**
    * ControlValueAccessor
    * 实现自定义表单ngModel功能
-   * 
+   *
    */
    writeValue(value: SliderValue): void {
     this.setValue(value,true);
@@ -306,12 +312,12 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
   setDisabledState?(isDisabled: boolean): void {
     throw new Error('Method not implemented.');
   }
-    
+
     //组件销毁时解绑
     ngOnDestroy(): void {
       this.unsubcribeDrag();
     }
-  
+
 
 
 
