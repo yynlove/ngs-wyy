@@ -1,14 +1,14 @@
 
 import { Action, createReducer, on } from '@ngrx/store';
 import { Song } from 'src/app/services/data-types/common.type';
-import { PlayMOde } from 'src/app/share/wy-ui/wy-player/player-type';
+import { PlayMode } from 'src/app/share/wy-ui/wy-player/player-type';
 import { SetCurrentIndex, SetPlaying, SetPlayList, SetPlayMode, SetSongList } from '../actions/palyer-action';
 //定义播放器需要的元数据
 export type PlayState={
   //播放状态
   playing : boolean;
   //播放模式
-  playMode: PlayMOde;
+  playMode: PlayMode;
 
   //歌曲列表
   songList : Song[];

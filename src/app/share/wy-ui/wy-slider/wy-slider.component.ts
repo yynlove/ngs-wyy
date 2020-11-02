@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, Inject, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Inject, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { fromEvent, merge,Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, takeUntil, tap } from 'rxjs/internal/operators';
@@ -34,6 +34,7 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
 
   @Input() wyMax =100;
 
+  @Output() wyOnAfterChange = new EventEmitter<SliderValue>();
 
   /**
    * ElementRef 对视图中某个原生元素的包装器。
@@ -216,6 +217,9 @@ export class WySliderComponent implements OnInit,OnDestroy,ControlValueAccessor 
 
 
   private onDragEnd(){
+    //移动滑块鼠标抬起，发射一个事件
+    this.wyOnAfterChange.emit(this.value);
+
     this.toggleDragMoving(false);
     this.cdr.markForCheck();
   }
