@@ -4,8 +4,9 @@ import { select, Store } from '@ngrx/store';
 import { fromEvent, Subscription } from 'rxjs';
 import { Song } from 'src/app/services/data-types/common.type';
 import { AppStoreModule } from 'src/app/store';
-import { SetCurrentIndex, SetPlayMode } from 'src/app/store/actions/palyer-action';
+import { SetCurrentIndex, SetPlayList, SetPlayMode } from 'src/app/store/actions/palyer-action';
 import { getCurrentIndex, getCurrentSong, getPlayer, getPlayList, getPlayMode, getSongList } from 'src/app/store/selectors/player.selector';
+import { shuffle } from 'src/app/util/array';
 import { PlayMode } from './player-type';
 //播放模式
 const modeTypes:PlayMode[] =[{
@@ -83,7 +84,7 @@ export class WyPlayerComponent implements OnInit {
   }
 
   /**
-   *
+   * 监听事件
    * 绑定数据
    */
   private wactchList(list: Song[],type:string){
@@ -96,7 +97,21 @@ export class WyPlayerComponent implements OnInit {
   }
   watchPlayMode(mode: PlayMode): void {
     this.currentMode = mode;
+
+    if(this.songList){
+      let list = this.songList.slice();
+      if(mode.type === 'random'){
+        //打乱一个数组
+        list = shuffle(this.songList);
+        //保证当前播放的歌曲不变
+        this.updateCurrentIndex(list,this.currentSong);
+        //更改歌曲的播放顺序
+        this.store$.dispatch(SetPlayList({playList:list}));
+      }
+      // console.log('suijiList',list);
+    }
   }
+
   watchCurrentSong(song: Song): void {
     console.log("player-song>>>",song);
     if(song){
@@ -104,6 +119,28 @@ export class WyPlayerComponent implements OnInit {
       this.duration = song.dt /1000; //毫秒换算秒
     }
   }
+
+  //播放结束
+  onEnded(){
+    this.playing = false;
+    if(this.currentMode.type === 'singleLoop'){
+      this.loop();
+    }else{
+      this.onNext(this.currentIndex + 1);
+    }
+  }
+
+
+  /**
+   * 随机播放更改当前歌曲的索引 保证当前歌曲不变
+   * @param list
+   * @param currentSong
+   */
+  updateCurrentIndex(list: Song[], currentSong: Song) {
+    const newIndex = list.findIndex(item => item.id === currentSong.id);
+    this.store$.dispatch(SetCurrentIndex({currentIndex : newIndex}));
+  }
+
 
 
   /**
@@ -149,6 +186,7 @@ export class WyPlayerComponent implements OnInit {
       this.updateIndex(newIndex);
     }
   }
+
   loop() {
    this.audioEl.currentTime = 0;
    this.play();
@@ -160,6 +198,7 @@ export class WyPlayerComponent implements OnInit {
    */
   changeMode(){
     const modeType = modeTypes[ ++ this.modeCount % 3];
+    //使watchPlayMode 能监听到
     this.store$.dispatch(SetPlayMode({playMode:modeType}));
   }
 

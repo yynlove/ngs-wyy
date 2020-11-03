@@ -1,4 +1,5 @@
 import { analyzeAndValidateNgModules } from '@angular/compiler';
+import { getRomdomInt } from './number';
 
 
 export function isArray(arr:any[],target:any){
@@ -6,11 +7,24 @@ export function isArray(arr:any[],target:any){
 }
 
 
+//将一个数组的顺序随机打乱
+export function shuffle<T>(arr: T[]):T[]{
+
+    const result = arr.slice();
+    for(let i=0;i<result.length;i++){
+
+      const j = getRomdomInt([0,i]);
+
+      [result[i],result[j]] = [result[j],result[i]];
+    }
+    return result;
+}
+
 export function getElementOffset(el: HTMLElement):{top:number;left:number;} {
     if(!el.getClientRects().length){
         return {
                top:0,
-               left:0 
+               left:0
         }
     }
     const rect = el.getBoundingClientRect();
