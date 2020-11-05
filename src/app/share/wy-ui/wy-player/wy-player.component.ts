@@ -45,10 +45,13 @@ export class WyPlayerComponent implements OnInit {
   //是否可以播放
   songReady = false;
   //音量
-  volume: number = 60;
+  volume: number = 20;
 
   //是否显示音量面板
-  showVolumePanel = false;
+  showVolumnPanel = false;
+
+  //是否显示歌单面板
+  showPanel = false;
   //判断点击的是音量面板本身
   selfClick :boolean = false;
 
@@ -212,25 +215,42 @@ export class WyPlayerComponent implements OnInit {
   }
 
 
-  toggleVolPanel(evt: MouseEvent){
-    //阻止冒泡
-    //evt.stopPropagation();
-    this.togglePanel();
-
-  }
-
   /**
    * 控制音量面板
    */
-  togglePanel(){
-    this.showVolumePanel = !this.showVolumePanel;
-    if(this.showVolumePanel){
+  toggleVolPanel(){
+    //阻止冒泡
+    //evt.stopPropagation();
+    this.togglePanel('showVolumnPanel');
+
+  }
+
+
+  /**
+   * 控制歌单面板 是否显示
+   */
+  toggleListPanel(){
+    //有歌曲才显示
+    if(this.songList.length){
+      this.togglePanel('showPanel');
+    }
+  }
+
+
+  togglePanel(type:string){
+    this[type] = !this[type];
+    //只要有一个存在就全局的click 事件
+    if(this.showVolumnPanel || this.showPanel){
       //绑定全局的click事件
       this.bindDocumentClickListener();
     }else{
       this.unbindDocumentClickListener();
     }
   }
+
+
+
+
   unbindDocumentClickListener() {
     if(this.winClick){ //说明点击了播放器以外的地方
      this.winClick.unsubscribe();
@@ -241,7 +261,8 @@ export class WyPlayerComponent implements OnInit {
     if(!this.winClick){
       this.winClick = fromEvent(this.doc,'click').subscribe(()=>{
         if(!this.selfClick){ //说明点击了播放器以外的地方
-          this.showVolumePanel = false;
+          this.showVolumnPanel = false;
+          this.showPanel = false;
           this.unbindDocumentClickListener();
         }
         this.selfClick = false;
@@ -298,8 +319,22 @@ export class WyPlayerComponent implements OnInit {
 
 
 
+
+
+
+
   updateIndex(index: number){
     this.store$.dispatch(SetCurrentIndex({ currentIndex : index}));
     this.songReady = false;
   }
+
+
+
+  /**
+   * 通过面板改变歌曲
+   */
+  onChangeSong(song:Song){
+    this.updateCurrentIndex(this.songList,song);
+  }
+
 }
