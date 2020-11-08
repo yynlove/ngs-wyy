@@ -39,3 +39,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ###   @ngrx/store
 >npm install @ngrx/store --save
 >npm install @ngrx/store-devtools --save  需要安装Redux DevTools 插件
+
+### 滚动插件
+>ng g c share/wy-ui/wy-player/wy-scroll -s -t -c=OnPush -v=None
+>npm install @better-scroll/core --save
+>npm install @better-scroll/scroll-bar --save
+>npm install @better-scroll/mouse-wheel --save
+

@@ -26,11 +26,6 @@ export class SongService {
   getSongList(songs:Song | Song[]):Observable<Song[]>{
     const songsArr = Array.isArray(songs)? songs.slice():[songs];
     const ids = songsArr.map(item=>item.id).join(',');
-    // return  Observable.create(observer=>{
-    //   this.getSongUrl(ids).subscribe(urls=>{
-    //     observer.next(this.generateSongList(songsArr,urls));
-    //   });
-    // })
     return this.getSongUrl(ids).pipe(map(urls=>this.generateSongList(songsArr,urls)));
   }
 
@@ -40,7 +35,7 @@ export class SongService {
     const res = [];
     songsArr.forEach(song=>{
       const url =  urls.find(url=>url.id === song.id).url;
-      
+
       if(url){
         res.push({...song,url});
       }
