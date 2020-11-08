@@ -6,7 +6,7 @@ import { Song } from 'src/app/services/data-types/common.type';
 import { AppStoreModule } from 'src/app/store';
 import { SetCurrentIndex, SetPlayList, SetPlayMode } from 'src/app/store/actions/palyer-action';
 import { getCurrentIndex, getCurrentSong, getPlayer, getPlayList, getPlayMode, getSongList } from 'src/app/store/selectors/player.selector';
-import { shuffle } from 'src/app/util/array';
+import { findIndex, shuffle } from 'src/app/util/array';
 import { PlayMode } from './player-type';
 //播放模式
 const modeTypes:PlayMode[] =[{
@@ -140,7 +140,8 @@ export class WyPlayerComponent implements OnInit {
    * @param currentSong
    */
   updateCurrentIndex(list: Song[], currentSong: Song) {
-    const newIndex = list.findIndex(item => item.id === currentSong.id);
+
+    const newIndex = findIndex(list,currentSong);
     this.store$.dispatch(SetCurrentIndex({currentIndex : newIndex}));
   }
 

@@ -1,12 +1,15 @@
 import { Component, OnInit, ViewChild, ɵConsole } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { NzCarouselComponent } from 'ng-zorro-antd/carousel';
 import { map } from 'rxjs/internal/operators';
 import { Banner, HotTag, Singer, SongSheet } from 'src/app/services/data-types/common.type';
 import { SheetService } from 'src/app/services/sheet.service';
 import { AppStoreModule } from 'src/app/store';
 import { SetCurrentIndex, SetPlayList, SetSongList } from 'src/app/store/actions/palyer-action';
+import { PlayState } from 'src/app/store/reducers/player.reducer';
+import { getPlayer } from 'src/app/store/selectors/player.selector';
+import { findIndex, shuffle } from 'src/app/util/array';
 
 
 @Component({
@@ -21,6 +24,8 @@ export class HomeComponent implements OnInit {
   hotTags:HotTag[];
   songSheetList:SongSheet[];
   singers:Singer[];
+
+  private playerState : PlayState;
 
   /**
    *  如果父组件的类需要读取子组件的属性值或调用子组件的方法，就不能使用本地变量方法。当父组件类需要这种访问时，可以把子组件作为 ViewChild，注入到父组件里面。
@@ -47,6 +52,8 @@ export class HomeComponent implements OnInit {
       this.singers= singers;
     })
 
+    this.store$.pipe(select(getPlayer)).subscribe(res => this.playerState = res);
+
    }
 
    /**
@@ -66,8 +73,19 @@ export class HomeComponent implements OnInit {
       console.log("onPlaySheet:",list)
         //执行三个动作
         this.store$.dispatch(SetSongList({ songList:list }));
-        this.store$.dispatch(SetPlayList({ playList:list }));
-        this.store$.dispatch(SetCurrentIndex({ currentIndex:0 }));
+        //判断是否是随机模式播放
+
+        let trueIndex =0;
+        let trueList = list.slice();
+        if(this.playerState.playMode.type === 'random'){
+          //打乱顺序
+          trueList = shuffle(list || []);
+          //查找索引
+          trueIndex = findIndex(trueList,list[trueIndex]);
+        }
+
+        this.store$.dispatch(SetPlayList({ playList:trueList }));
+        this.store$.dispatch(SetCurrentIndex({ currentIndex:trueIndex }));
       });
    }
 

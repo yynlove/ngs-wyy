@@ -1,4 +1,5 @@
 import { analyzeAndValidateNgModules } from '@angular/compiler';
+import { Song } from '../services/data-types/common.type';
 import { getRomdomInt } from './number';
 
 
@@ -35,4 +36,10 @@ export function getElementOffset(el: HTMLElement):{top:number;left:number;} {
         left:rect.left+win.pageXOffset,
     }
 
+  }
+
+
+
+  export function findIndex(list:Song[],current:Song){
+    return list.findIndex(item=>item.id === current.id);
   }

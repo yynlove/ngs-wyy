@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import { Song } from 'src/app/services/data-types/common.type';
+import { findIndex } from 'src/app/util/array';
 import { WyScrollComponent } from '../wy-scroll/wy-scroll.component';
 
 @Component({
@@ -11,7 +12,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
 
   @Input() songList : Song[];
   @Input() currentSong : Song;
-  @Input() currentIndex : number;
+  currentIndex : number;
   @Input() show:boolean;
 
   @Output() onClose = new EventEmitter<void>();
@@ -31,15 +32,23 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
    * @param changes
    */
   ngOnChanges(changes: SimpleChanges): void {
+
     if(changes['songList']){
       console.log('songList',this.songList);
+      //切换歌单 肯定是0
+      this.currentIndex =0;
     }
 
     //j监听当前播放歌曲是否改变
     if(changes['currentSong']){
       //滚动到当前歌曲
-      if(this.currentSong && this.show){
-        this.scrollToCurrent()
+      if(this.currentSong){
+        //切换歌曲 重新获取当前索引
+        this.currentIndex = findIndex(this.songList,this.currentSong);
+
+        if(this.show){
+          this.scrollToCurrent();
+        }
       }else{
 
       }
@@ -48,10 +57,11 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       if(!changes['show'].firstChange && this.show){
         this.wyScroll.first.refreshScroll();
         //等滚动组件50ms刷新完成后在进行滚动
-        setTimeout(() => {},80);
-        if(this.currentSong){
-          this.scrollToCurrent();
-        }
+        setTimeout(() => {
+          if(this.currentSong){
+            this.scrollToCurrent(0);
+        }},80);
+
       }
 
     }
@@ -60,7 +70,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
  /**
    * 滚动到当前歌曲
    */
-  private scrollToCurrent() {
+  private scrollToCurrent(speed = 300) {
    const songListRefs = this.wyScroll.first.el.nativeElement.querySelectorAll('ul li');
    console.log("滚动条里所有li标签>>>",songListRefs);
    if(songListRefs.length){
@@ -71,7 +81,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     console.log("offsetTop",offsetTop);
     console.log("liOffsetHeight",liOffsetHeight);
     if((offsetTop-Math.abs(this.scrollY)) > liOffsetHeight * 5 || offsetTop <Math.abs(this.scrollY)){
-      this.wyScroll.first.scrollToElement(currentLi,300,false,false);
+      this.wyScroll.first.scrollToElement(currentLi,speed,false,false);
     }
   }
   }
