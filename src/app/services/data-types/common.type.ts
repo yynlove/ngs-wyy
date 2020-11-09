@@ -57,3 +57,11 @@ export type SongUrl ={
   id:number;
   url:string;
 }
+
+
+
+export type Lyric = {
+  lyric:string; //歌词
+  tlyric:string; //翻译歌词
+
+}

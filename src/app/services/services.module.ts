@@ -1,11 +1,9 @@
-import { InjectionToken, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from '../app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { isPlatformBrowser } from '@angular/common';
+import { InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
+
 
 export const API_CONFIG = new InjectionToken('ApiConfigToken');
-
+export const WINDOW = new InjectionToken('WindowToken');
 @NgModule({
   declarations: [],
   imports: [
@@ -15,7 +13,15 @@ export const API_CONFIG = new InjectionToken('ApiConfigToken');
     // BrowserAnimationsModule
   ],
   providers:[
-    {provide:API_CONFIG,useValue:'http://localhost:3000/'}
+    {provide:API_CONFIG,useValue:'http://localhost:3000/'},
+    {
+      provide:WINDOW,
+      useFactory(platformId:Object) : Window | Object {
+        return isPlatformBrowser(platformId) ? window :{};
+      },
+      deps:[PLATFORM_ID] //平台
+
+    }
   ]
 })
 export class ServicesModule { }

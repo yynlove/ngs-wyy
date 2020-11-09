@@ -2,6 +2,8 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, AfterVie
 import BScroll from '@better-scroll/core';
 import ScrollBar from '@better-scroll/scroll-bar';
 import MouseWheel from '@better-scroll/mouse-wheel';
+import { timer } from 'rxjs';
+
 BScroll.use(ScrollBar);
 BScroll.use(MouseWheel);
 
@@ -18,9 +20,9 @@ BScroll.use(MouseWheel);
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
-  scrollToElement(...args) {
-    this.bs.scrollToElement.apply(this.bs, args);
-  }
+
+
+
 
 
 
@@ -53,7 +55,6 @@ export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
     //设置滑动组件作用的外层组件
     this.bs = new  BScroll(this.warpRef.nativeElement,{
       scrollbar:{
-        scrollbar:true,
         interactive:true
       },
        mouseWheel: {
@@ -74,10 +75,14 @@ export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
   }
 
   refreshScroll(){
-    setTimeout(() => this.refresh(),this.refreshDelay)
+    //利用timer 取代setTimeout;
+    timer(this.refreshDelay).subscribe(() => {this.refresh()});
+    //setTimeout(() => this.refresh(),this.refreshDelay)
   }
 
-
+  scrollToElement(...args) {
+    this.bs.scrollToElement.apply(this.bs, args);
+  }
 
 
 

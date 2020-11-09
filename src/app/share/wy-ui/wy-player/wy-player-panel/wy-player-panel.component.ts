@@ -1,7 +1,11 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
+import { timer } from 'rxjs';
 import { Song } from 'src/app/services/data-types/common.type';
+import { WINDOW } from 'src/app/services/services.module';
+import { SongService } from 'src/app/services/song.service';
 import { findIndex } from 'src/app/util/array';
 import { WyScrollComponent } from '../wy-scroll/wy-scroll.component';
+import { BaseLyricLine, WyLycir } from './WyLyric';
 
 @Component({
   selector: 'app-wy-player-panel',
@@ -22,8 +26,12 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   @ViewChildren(WyScrollComponent) private wyScroll : QueryList<WyScrollComponent>;
 
   scrollY = 0;
+  currentLyric: BaseLyricLine[];
 
-  constructor() { }
+  constructor(private songService : SongService) {
+
+
+  }
 
 
 
@@ -45,7 +53,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       if(this.currentSong){
         //切换歌曲 重新获取当前索引
         this.currentIndex = findIndex(this.songList,this.currentSong);
-
+        //切换歌词
+        this.updateLyric();
         if(this.show){
           this.scrollToCurrent();
         }
@@ -56,15 +65,27 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     if(changes['show']){
       if(!changes['show'].firstChange && this.show){
         this.wyScroll.first.refreshScroll();
+        //刷新歌词
+        this.wyScroll.last.refreshScroll();
         //等滚动组件50ms刷新完成后在进行滚动
-        setTimeout(() => {
-          if(this.currentSong){
+        //定时器
+        timer(100).subscribe(() =>{
+           if(this.currentSong){
             this.scrollToCurrent(0);
-        }},80);
+          }
+        })
+
 
       }
 
     }
+  }
+  updateLyric() {
+    this.songService.getLyric(this.currentSong.id).subscribe(res => {
+      console.log("lyric",res.lyric);
+      const lyric = new WyLycir(res);
+      this.currentLyric = lyric.lines;
+    });
   }
 
  /**
@@ -72,15 +93,16 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
    */
   private scrollToCurrent(speed = 300) {
    const songListRefs = this.wyScroll.first.el.nativeElement.querySelectorAll('ul li');
-   console.log("滚动条里所有li标签>>>",songListRefs);
+
    if(songListRefs.length){
     const currentLi = <HTMLElement>songListRefs[this.currentIndex || 0];
     const offsetTop = currentLi.offsetTop;
     const liOffsetHeight = currentLi.offsetHeight;
-    console.log("scrollY",this.scrollY);
-    console.log("offsetTop",offsetTop);
-    console.log("liOffsetHeight",liOffsetHeight);
-    if((offsetTop-Math.abs(this.scrollY)) > liOffsetHeight * 5 || offsetTop <Math.abs(this.scrollY)){
+    // console.log("scrollY",this.scrollY);
+    // console.log("offsetTop",offsetTop);
+    // console.log("liOffsetHeight",liOffsetHeight);
+    if((offsetTop-Math.abs(this.scrollY)) > liOffsetHeight * 4 || offsetTop <Math.abs(this.scrollY)){
+
       this.wyScroll.first.scrollToElement(currentLi,speed,false,false);
     }
   }
