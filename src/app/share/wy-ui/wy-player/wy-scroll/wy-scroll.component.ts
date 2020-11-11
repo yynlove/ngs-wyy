@@ -21,15 +21,7 @@ BScroll.use(MouseWheel);
 })
 export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
 
-
-
-
-
-
-
   @Input() data : any[];
-
-
   //滚动面板延迟刷新的时长
   @Input() refreshDelay:number = 50;
 
