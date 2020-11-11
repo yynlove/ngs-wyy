@@ -1,7 +1,6 @@
 import { Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import { timer } from 'rxjs';
 import { Song } from 'src/app/services/data-types/common.type';
-import { WINDOW } from 'src/app/services/services.module';
 import { SongService } from 'src/app/services/song.service';
 import { findIndex } from 'src/app/util/array';
 import { WyScrollComponent } from '../wy-scroll/wy-scroll.component';
@@ -14,9 +13,14 @@ import { BaseLyricLine, WyLycir } from './WyLyric';
 })
 export class WyPlayerPanelComponent implements OnInit,OnChanges {
 
+
+  //歌曲是否播放
+  @Input() playing:boolean;
+  //歌曲播放列表
   @Input() songList : Song[];
   @Input() currentSong : Song;
   currentIndex : number;
+  //歌曲列表面板是否显示
   @Input() show:boolean;
 
   @Output() onClose = new EventEmitter<void>();
@@ -27,10 +31,14 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
 
   scrollY = 0;
   currentLyric: BaseLyricLine[];
+  //当前播放的行
+  currentLineNum: number;
+  //歌词
+  private lyric : WyLycir;
+
+
 
   constructor(private songService : SongService) {
-
-
   }
 
 
@@ -40,6 +48,14 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
    * @param changes
    */
   ngOnChanges(changes: SimpleChanges): void {
+    //判断歌曲的播放状态是否改变
+    if(changes['playing']){
+      if(!changes['playing'].firstChange){
+        this.lyric && this.lyric.togglePlay(this.playing);
+
+      }
+    }
+
 
     if(changes['songList']){
       console.log('songList',this.songList);
@@ -83,11 +99,23 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   updateLyric() {
     this.songService.getLyric(this.currentSong.id).subscribe(res => {
       console.log("lyric",res.lyric);
-      const lyric = new WyLycir(res);
-      this.currentLyric = lyric.lines;
-      console.log('this.currentLyric',this.currentLyric);
+      this.lyric = new WyLycir(res);
+      this.currentLyric = this.lyric.lines;
+     // console.log('this.currentLyric',this.currentLyric);
+      this.handleLyric();
 
+      this.wyScroll.last.scrollTo(0,0);
+      //如果歌曲播放 歌词也要跟着播放
+      if(this.playing){
+        this.lyric.play();
+      }
     });
+  }
+  handleLyric() {
+    this.lyric.handler.subscribe(({lineNum})=>{
+      console.log('lineNum',lineNum);
+      this.currentLineNum = lineNum;
+    })
   }
 
  /**

@@ -1,4 +1,4 @@
-import { from, Observable, zip } from 'rxjs';
+import { from, Observable, Subject, zip } from 'rxjs';
 import { skip } from 'rxjs/internal/operators';
 import { Lyric } from 'src/app/services/data-types/common.type';
 
@@ -11,12 +11,30 @@ export interface LyricLine extends BaseLyricLine{
   time:number;
 }
 
+export interface Handler extends BaseLyricLine{
+  lineNum : number; //当前歌词的索引
+}
+
+
 //时间正则[00:00.000] [00:00.000]
 const timeExp = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/
 
 export class WyLycir{
 
+
+
   private lrc :Lyric;
+  //播放状态
+  private playing:boolean =false;
+  //当前播放的第几行歌词
+  private curNum:number;
+  //当前播放时间戳
+  private startTemp : number;
+  //暂停的时间
+  private pausetemp : number;
+  private timer:any;
+
+  handler = new Subject<Handler>()
 
   lines :LyricLine[] = [];
   constructor(lrc: Lyric){
@@ -101,5 +119,77 @@ export class WyLycir{
       zipLines$ = zip(from(lines),from(tlines).pipe(skip(_skip)));
     }
     zipLines$.subscribe(([line,tline]) => this.makeLine(line,tline));
+  }
+
+  //播放歌词
+  play(startTime = 0) {
+    if(!this.lines.length) return;
+    if(!this.playing){
+      this.playing = true;
+    }
+
+    this.curNum = this.findCurNum(startTime)
+    console.log('this.curNum',this.curNum);
+    //当前行已经播放的过的时间戳长度
+    this.startTemp = Date.now() - startTime;
+
+    if(this.curNum < this.lines.length){
+      //清除定时器
+      clearTimeout(this.timer);
+      this.playReset();
+
+    }
+  }
+
+
+  playReset() {
+    let line = this.lines[this.curNum];
+    //当前行播放介素剩余的ms数
+    const delay = line.time - (Date.now() - this.startTemp);
+
+    this.timer = setTimeout(() =>{
+      //边播放便把当前的歌词发射出去
+      this.callHandler(this.curNum++);
+      if(this.curNum <this.lines.length && this.playing){
+        this.playReset();
+      }
+    },delay)
+
+  }
+
+  callHandler(i: number) {
+    this.handler.next({
+      txt:this.lines[i].txt,
+      txtCn:this.lines[i].txtCn,
+      lineNum:i
+    });
+  }
+
+
+  findCurNum(startTime: number): number {
+    const index = this.lines.findIndex(item => startTime <=item.time);
+    return index === -1 ? this.lines.length -1 : index;
+  }
+
+
+  togglePlay(playing: boolean) {
+
+    const now = Date.now();
+
+    this.playing = playing;
+    if(playing){
+      const startTime = (this.pausetemp || now) - (this.startTemp || now);
+      this.play(startTime)
+    }else{
+      this.stop();
+      this.pausetemp = now;
+    }
+  }
+  //暂停播放
+  stop() {
+    if(this.playing){
+      this.playing = false;
+    }
+    clearTimeout(this.timer);
   }
 }
