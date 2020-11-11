@@ -85,6 +85,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       console.log("lyric",res.lyric);
       const lyric = new WyLycir(res);
       this.currentLyric = lyric.lines;
+      console.log('this.currentLyric',this.currentLyric);
+
     });
   }
 
