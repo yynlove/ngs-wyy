@@ -8,7 +8,7 @@ export interface BaseLyricLine{
 }
 
 export interface LyricLine extends BaseLyricLine{
-  time:number;
+  time:number; //单位：ms
 }
 
 export interface Handler extends BaseLyricLine{
@@ -80,8 +80,8 @@ export class WyLycir{
     //换行符将歌词分割成数组
     const lines = this.lrc.lyric.split('\n');
     const tlines = this.lrc.tlyric.split('\n').filter(item => timeExp.exec(item) !== null);
-    console.log('lines',lines);
-    console.log('tlines',tlines);
+   // console.log('lines',lines);
+    //console.log('tlines',tlines);
     //判断是原歌词长度长 还是翻译歌词长
     const moreLine = lines.length - tlines.length;
     let tempArr =[];
@@ -109,7 +109,7 @@ export class WyLycir{
         this.makeLine(element);
       });
     }
-    console.log('this.lines',this.lines);
+    //console.log('this.lines',this.lines);
 
     //使用zip 组装双语歌词
     let zipLines$ :Observable<[string,string]>;
@@ -130,7 +130,8 @@ export class WyLycir{
 
     this.curNum = this.findCurNum(startTime)
     console.log('this.curNum',this.curNum);
-    //当前行已经播放的过的时间戳长度
+    //startTime 已经播放的过的时间戳长度
+    //startTemp 歌曲重新开始播放的时间戳
     this.startTemp = Date.now() - startTime;
 
     if(this.curNum < this.lines.length){
@@ -144,11 +145,11 @@ export class WyLycir{
 
   playReset() {
     let line = this.lines[this.curNum];
-    //当前行播放介素剩余的ms数
+    //播放介素剩余的ms数
+   // console.log("Date.now",Date.now())
     const delay = line.time - (Date.now() - this.startTemp);
-
+    //边播放便延迟把当前的歌词发射出去
     this.timer = setTimeout(() =>{
-      //边播放便把当前的歌词发射出去
       this.callHandler(this.curNum++);
       if(this.curNum <this.lines.length && this.playing){
         this.playReset();
@@ -166,6 +167,7 @@ export class WyLycir{
   }
 
 
+  //根据时间计算当前播放行
   findCurNum(startTime: number): number {
     const index = this.lines.findIndex(item => startTime <=item.time);
     return index === -1 ? this.lines.length -1 : index;

@@ -319,11 +319,6 @@ export class WyPlayerComponent implements OnInit {
   }
 
 
-
-
-
-
-
   updateIndex(index: number){
     this.store$.dispatch(SetCurrentIndex({ currentIndex : index}));
     this.songReady = false;

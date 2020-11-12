@@ -26,6 +26,7 @@ export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
   @Input() refreshDelay:number = 50;
 
   @Output() private onScrollEnd = new EventEmitter<number>();
+
   private bs :BScroll;
 
   @ViewChild('warp',{static:true}) private warpRef:ElementRef;
@@ -44,11 +45,11 @@ export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
   }
 
   ngAfterViewInit(): void {
-    console.log('滚动高度',this.warpRef.nativeElement.offsetHeight)
+    console.log('滚动高度',this.warpRef.nativeElement)
     //设置滑动组件作用的外层组件
     this.bs = new  BScroll(this.warpRef.nativeElement,{
       scrollbar:{
-        interactive:true
+        interactive:false
       },
        mouseWheel: {
         speed: 20,
@@ -56,7 +57,7 @@ export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
         easeTime: 300
       }
     });
-
+    //scrollEnd 滚动结束
     this.bs.on('scrollEnd',({ y }) => this.onScrollEnd.emit(y))
   }
 

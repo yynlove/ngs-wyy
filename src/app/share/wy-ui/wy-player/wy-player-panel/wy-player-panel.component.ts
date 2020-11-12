@@ -29,7 +29,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   //使用viewchildren是因为 有一个歌词也需要滚动
   @ViewChildren(WyScrollComponent) private wyScroll : QueryList<WyScrollComponent>;
 
-  scrollY = 0;
+  scrollY = 0; //接受的bs纵轴坐标  相当于左侧滑块的偏移量
+
   currentLyric: BaseLyricLine[];
   //当前播放的行
   currentLineNum: number;
@@ -85,7 +86,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
         this.wyScroll.last.refreshScroll();
         //等滚动组件50ms刷新完成后在进行滚动
         //定时器
-        timer(100).subscribe(() =>{
+        timer(50).subscribe(() =>{
            if(this.currentSong){
             this.scrollToCurrent(0);
           }
@@ -98,10 +99,11 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   }
   updateLyric() {
     this.songService.getLyric(this.currentSong.id).subscribe(res => {
-      console.log("lyric",res.lyric);
+     // console.log("lyric",res.lyric);
       this.lyric = new WyLycir(res);
       this.currentLyric = this.lyric.lines;
      // console.log('this.currentLyric',this.currentLyric);
+     //订阅多播
       this.handleLyric();
 
       this.wyScroll.last.scrollTo(0,0);
@@ -113,24 +115,32 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   }
   handleLyric() {
     this.lyric.handler.subscribe(({lineNum})=>{
-      console.log('lineNum',lineNum);
+      console.log('接受多播的值lineNum',lineNum);
       this.currentLineNum = lineNum;
     })
   }
 
  /**
    * 滚动到当前歌曲
+   *  obj.offsetTop 指 obj 距离上方或上层控件的位置，整型，单位像素。
+
+      obj.offsetLeft 指 obj 距离左方或上层控件的位置，整型，单位像素。
+
+      obj.offsetWidth 指 obj 控件自身的宽度，整型，单位像素。
+
+      obj.offsetHeight 指 obj 控件自身的高度，整型，单位像素
    */
   private scrollToCurrent(speed = 300) {
+   console.log("this.wyScroll.first.el",this.wyScroll.first.el.nativeElement);
    const songListRefs = this.wyScroll.first.el.nativeElement.querySelectorAll('ul li');
 
    if(songListRefs.length){
     const currentLi = <HTMLElement>songListRefs[this.currentIndex || 0];
     const offsetTop = currentLi.offsetTop;
     const liOffsetHeight = currentLi.offsetHeight;
-    // console.log("scrollY",this.scrollY);
-    // console.log("offsetTop",offsetTop);
-    // console.log("liOffsetHeight",liOffsetHeight);
+     console.log("scrollY",this.scrollY);
+     console.log("offsetTop",offsetTop);
+     console.log("liOffsetHeight",liOffsetHeight);
     if((offsetTop-Math.abs(this.scrollY)) > liOffsetHeight * 4 || offsetTop <Math.abs(this.scrollY)){
 
       this.wyScroll.first.scrollToElement(currentLi,speed,false,false);
