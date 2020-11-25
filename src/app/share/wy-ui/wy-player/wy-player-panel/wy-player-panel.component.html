@@ -46,7 +46,8 @@
     </app-wy-scroll>
 
     <!-- 歌词样式 -->
-    <app-wy-scroll class="list-lyric">
+    <!-- [data]="currentLyric"  歌曲改变刷新滚动面板 -->
+    <app-wy-scroll class="list-lyric" [data]="currentLyric">
       <ul>
         <li *ngFor = "let item of currentLyric; index as i" [class.current]="currentLineNum === i">
           {{item.txt}} <br/> {{item.txtCn}}

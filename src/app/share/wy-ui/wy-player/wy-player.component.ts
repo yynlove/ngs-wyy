@@ -8,6 +8,7 @@ import { SetCurrentIndex, SetPlayList, SetPlayMode } from 'src/app/store/actions
 import { getCurrentIndex, getCurrentSong, getPlayer, getPlayList, getPlayMode, getSongList } from 'src/app/store/selectors/player.selector';
 import { findIndex, shuffle } from 'src/app/util/array';
 import { PlayMode } from './player-type';
+import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
 //播放模式
 const modeTypes:PlayMode[] =[{
   type:'loop',
@@ -63,6 +64,11 @@ export class WyPlayerComponent implements OnInit {
   private winClick : Subscription;
 
   @ViewChild('audio',{ static : true }) private audio :ElementRef;
+  //有显示和隐藏的动作 static为false
+  @ViewChild(WyPlayerPanelComponent,{ static : false }) private playerPanel :WyPlayerPanelComponent;
+
+
+
   private audioEl : HTMLAudioElement;
 
   constructor(
@@ -126,6 +132,7 @@ export class WyPlayerComponent implements OnInit {
   //播放结束
   onEnded(){
     this.playing = false;
+    //单曲循环
     if(this.currentMode.type === 'singleLoop'){
       this.loop();
     }else{
@@ -194,6 +201,12 @@ export class WyPlayerComponent implements OnInit {
   loop() {
    this.audioEl.currentTime = 0;
    this.play();
+   //歌词更新
+   if(this.playerPanel){
+     this.playerPanel.seekLyric(0);
+   }
+
+
   }
 
 
@@ -293,7 +306,12 @@ export class WyPlayerComponent implements OnInit {
   onPercentChange(pre){
     console.log("pre",pre);
     if(this.currentSong){
-      this.audioEl.currentTime = this.duration * (pre / 100);
+      const currentTime = this.duration * (pre / 100);
+      this.audioEl.currentTime = currentTime;
+      if(this.playerPanel){
+        this.playerPanel.seekLyric(currentTime * 1000);
+
+      }
     }
   }
 

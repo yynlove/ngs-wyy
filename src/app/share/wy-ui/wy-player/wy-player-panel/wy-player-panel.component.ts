@@ -36,7 +36,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   currentLineNum: number;
   //歌词
   private lyric : WyLycir;
-
+  //歌词元素list
+  private lyricRefs :NodeList;
 
 
   constructor(private songService : SongService) {
@@ -76,7 +77,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
           this.scrollToCurrent();
         }
       }else{
-
+        //重置歌词
+          this.resetLyric();
       }
     }
     if(changes['show']){
@@ -98,13 +100,17 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     }
   }
   updateLyric() {
+    //切歌时，重置歌词
+    this.resetLyric();
+
     this.songService.getLyric(this.currentSong.id).subscribe(res => {
      // console.log("lyric",res.lyric);
       this.lyric = new WyLycir(res);
       this.currentLyric = this.lyric.lines;
      // console.log('this.currentLyric',this.currentLyric);
      //订阅多播
-      this.handleLyric();
+      const startLine = res.tlyric? 1:2;
+      this.handleLyric(startLine);
 
       this.wyScroll.last.scrollTo(0,0);
       //如果歌曲播放 歌词也要跟着播放
@@ -113,10 +119,46 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       }
     });
   }
-  handleLyric() {
+  //重置歌词
+  resetLyric() {
+    if(this.lyric){
+      this.lyric.stop();
+      this.currentLineNum=0;
+      this.currentLyric=[];
+      this.lyric = null;
+      this.lyricRefs = null;
+
+    }
+  }
+
+  //播放进度条改变时跳转歌词
+  seekLyric(timer:number){
+    if(this.lyric){
+      this.lyric.seek(timer);
+    }
+  }
+
+  handleLyric(startLine) {
     this.lyric.handler.subscribe(({lineNum})=>{
-      console.log('接受多播的值lineNum',lineNum);
-      this.currentLineNum = lineNum;
+      //播放时滚动歌词面板 并设置当前播放行
+      if(!this.lyricRefs){
+        this.lyricRefs =this.wyScroll.last.el.nativeElement.querySelectorAll('ul li');
+      }
+
+      if(this.lyricRefs.length){
+        console.log('接受多播的值lineNum',lineNum);
+        this.currentLineNum = lineNum;
+        //播放行数大于第三行 才开始滚动
+        if(lineNum > startLine){
+          const targetLine =this.lyricRefs[lineNum  -startLine];
+          if(targetLine){
+            this.wyScroll.last.scrollToElement(targetLine);
+          }
+        }else{
+          this.wyScroll.last.scrollTo(0,0);
+        }
+
+      }
     })
   }
 
