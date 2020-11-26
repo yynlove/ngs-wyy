@@ -25,6 +25,10 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
 
   @Output() onClose = new EventEmitter<void>();
   @Output() onChangeSong = new EventEmitter<Song>();
+  //删除一个歌曲
+  @Output() onDeleteSong = new EventEmitter<Song>();
+  //清空歌单
+  @Output() onClearSong = new EventEmitter<void>();
 
   //使用viewchildren是因为 有一个歌词也需要滚动
   @ViewChildren(WyScrollComponent) private wyScroll : QueryList<WyScrollComponent>;
@@ -39,6 +43,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   //歌词元素list
   private lyricRefs :NodeList;
 
+  //第几行滚动
+  private startLine=2;
 
   constructor(private songService : SongService) {
   }
@@ -62,7 +68,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     if(changes['songList']){
       console.log('songList',this.songList);
       //切换歌单 肯定是0
-      this.currentIndex =0;
+      this.updateCurrentIndex();
     }
 
     //j监听当前播放歌曲是否改变
@@ -70,7 +76,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       //滚动到当前歌曲
       if(this.currentSong){
         //切换歌曲 重新获取当前索引
-        this.currentIndex = findIndex(this.songList,this.currentSong);
+       this.updateCurrentIndex();
         //切换歌词
         this.updateLyric();
         if(this.show){
@@ -92,12 +98,21 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
            if(this.currentSong){
             this.scrollToCurrent(0);
           }
+          if(this.lyric){
+            this.scrollToCurrentLyric(0);
+          }
+
         })
 
 
       }
 
     }
+  }
+
+
+  private updateCurrentIndex(){
+    this.currentIndex = findIndex(this.songList,this.currentSong);
   }
   updateLyric() {
     //切歌时，重置歌词
@@ -109,8 +124,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       this.currentLyric = this.lyric.lines;
      // console.log('this.currentLyric',this.currentLyric);
      //订阅多播
-      const startLine = res.tlyric? 1:2;
-      this.handleLyric(startLine);
+      this.startLine = res.tlyric? 1:2;
+      this.handleLyric();
 
       this.wyScroll.last.scrollTo(0,0);
       //如果歌曲播放 歌词也要跟着播放
@@ -138,7 +153,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     }
   }
 
-  handleLyric(startLine) {
+  handleLyric() {
     this.lyric.handler.subscribe(({lineNum})=>{
       //播放时滚动歌词面板 并设置当前播放行
       if(!this.lyricRefs){
@@ -149,11 +164,8 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
         console.log('接受多播的值lineNum',lineNum);
         this.currentLineNum = lineNum;
         //播放行数大于第三行 才开始滚动
-        if(lineNum > startLine){
-          const targetLine =this.lyricRefs[lineNum  -startLine];
-          if(targetLine){
-            this.wyScroll.last.scrollToElement(targetLine);
-          }
+        if(lineNum > this.startLine){
+         this.scrollToCurrentLyric(300);
         }else{
           this.wyScroll.last.scrollTo(0,0);
         }
@@ -188,6 +200,14 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       this.wyScroll.first.scrollToElement(currentLi,speed,false,false);
     }
   }
+  }
+
+
+  private scrollToCurrentLyric(speed = 300){
+    const targetLine =this.lyricRefs[this.currentLineNum  - this.startLine];
+    if(targetLine){
+      this.wyScroll.last.scrollToElement(targetLine,speed,false,false);
+    }
   }
 
   ngOnInit(): void {

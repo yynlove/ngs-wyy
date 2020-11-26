@@ -1,4 +1,4 @@
-<div class="m-player" (click)="selfClick = true">
+<div class="m-player" appClickoutside [bingFlag]="bingFlag" (onClickOutSide)="onClickOutSide()">
   <div class="lock">
     <div class="left"><i></i></div>
 
@@ -65,7 +65,9 @@
       [currentSong]="currentSong"
       [show]="showPanel"
       (onClose)="showPanel = false"
-      (onChangeSong)="onChangeSong($event)">
+      (onChangeSong)="onChangeSong($event)"
+      (onDeleteSong)="onDeleteSong($event)"
+      (onClearSong)="onClearSong()">
 
       </app-wy-player-panel>
     </div>

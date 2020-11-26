@@ -9,8 +9,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { WyUiModule } from './wy-ui/wy-ui.module';
-
-
+import { NzModalModule } from 'ng-zorro-antd/modal';
 @NgModule({
 
   imports: [
@@ -23,7 +22,7 @@ import { WyUiModule } from './wy-ui/wy-ui.module';
     NzIconModule,
     NzNoAnimationModule,
     NzCarouselModule,
-
+    NzModalModule,
     WyUiModule,
   ],
   exports:[
@@ -36,10 +35,11 @@ import { WyUiModule } from './wy-ui/wy-ui.module';
     NzIconModule,
     NzNoAnimationModule,
     NzCarouselModule,
-
+    NzModalModule,
     WyUiModule,
 
 
-  ]
+  ],
+
 })
 export class ShareModule { }

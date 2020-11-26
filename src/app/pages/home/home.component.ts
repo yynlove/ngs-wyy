@@ -1,15 +1,16 @@
 import { Component, OnInit, ViewChild, ɵConsole } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+
 import { NzCarouselComponent } from 'ng-zorro-antd/carousel';
 import { map } from 'rxjs/internal/operators';
 import { Banner, HotTag, Singer, SongSheet } from 'src/app/services/data-types/common.type';
 import { SheetService } from 'src/app/services/sheet.service';
 import { AppStoreModule } from 'src/app/store';
-import { SetCurrentIndex, SetPlayList, SetSongList } from 'src/app/store/actions/palyer-action';
+import { BatchActionsService } from 'src/app/store/batch-actions.service';
+
 import { PlayState } from 'src/app/store/reducers/player.reducer';
 import { getPlayer } from 'src/app/store/selectors/player.selector';
-import { findIndex, shuffle } from 'src/app/util/array';
+
 
 
 @Component({
@@ -25,7 +26,7 @@ export class HomeComponent implements OnInit {
   songSheetList:SongSheet[];
   singers:Singer[];
 
-  private playerState : PlayState;
+
 
   /**
    *  如果父组件的类需要读取子组件的属性值或调用子组件的方法，就不能使用本地变量方法。当父组件类需要这种访问时，可以把子组件作为 ViewChild，注入到父组件里面。
@@ -41,8 +42,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private route :ActivatedRoute,
     private sheetService:SheetService,
-    //注入Store
-    private store$: Store<AppStoreModule>
+    private batchActionService : BatchActionsService
     ) {
     //从路由中获取数据 并赋值
     this.route.data.pipe(map(res=>res.homeDatas)).subscribe(([banners,hotTags,songSheet,singers])=>{
@@ -51,9 +51,6 @@ export class HomeComponent implements OnInit {
       this.songSheetList= songSheet;
       this.singers= singers;
     })
-
-    this.store$.pipe(select(getPlayer)).subscribe(res => this.playerState = res);
-
    }
 
    /**
@@ -71,21 +68,7 @@ export class HomeComponent implements OnInit {
    onPlaySheet(id:number){
     this.sheetService.playSheet(id).subscribe(list =>{
       console.log("onPlaySheet:",list)
-        //执行三个动作
-        this.store$.dispatch(SetSongList({ songList:list }));
-        //判断是否是随机模式播放
-
-        let trueIndex =0;
-        let trueList = list.slice();
-        if(this.playerState.playMode.type === 'random'){
-          //打乱顺序
-          trueList = shuffle(list || []);
-          //查找索引
-          trueIndex = findIndex(trueList,list[trueIndex]);
-        }
-
-        this.store$.dispatch(SetPlayList({ playList:trueList }));
-        this.store$.dispatch(SetCurrentIndex({ currentIndex:trueIndex }));
+        this.batchActionService.selectPlayList({list,index:0})
       });
    }
 

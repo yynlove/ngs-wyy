@@ -1,14 +1,18 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { fromEvent, Subscription } from 'rxjs';
 import { Song } from 'src/app/services/data-types/common.type';
 import { AppStoreModule } from 'src/app/store';
-import { SetCurrentIndex, SetPlayList, SetPlayMode } from 'src/app/store/actions/palyer-action';
+import { SetCurrentIndex, SetPlayList, SetPlayMode, SetSongList } from 'src/app/store/actions/palyer-action';
+import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { getCurrentIndex, getCurrentSong, getPlayer, getPlayList, getPlayMode, getSongList } from 'src/app/store/selectors/player.selector';
 import { findIndex, shuffle } from 'src/app/util/array';
 import { PlayMode } from './player-type';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
+
+
 //播放模式
 const modeTypes:PlayMode[] =[{
   type:'loop',
@@ -54,7 +58,8 @@ export class WyPlayerComponent implements OnInit {
   //是否显示歌单面板
   showPanel = false;
   //判断点击的是音量面板本身
-  selfClick :boolean = false;
+  //selfClick :boolean = false;
+  bingFlag :boolean = false;
 
   //播放模式
   currentMode:PlayMode;
@@ -73,7 +78,9 @@ export class WyPlayerComponent implements OnInit {
 
   constructor(
     private store$ : Store<AppStoreModule>,
-    @Inject(DOCUMENT) private doc :Document
+    @Inject(DOCUMENT) private doc :Document,
+    private batchArtionsService : BatchActionsService,
+    private nzModalService:NzModalService
   ) {
     const appStore$ = this.store$.pipe(select(getPlayer));
     //监听状态管理的变化
@@ -219,6 +226,14 @@ export class WyPlayerComponent implements OnInit {
     this.store$.dispatch(SetPlayMode({playMode:modeType}));
   }
 
+  onClickOutSide(){
+    console.log('OnClickOutSide');
+    this.showVolumnPanel = false;
+    this.showPanel = false;
+    this.bingFlag = false;
+  }
+
+
 
   /**
    * 滑动滑块 控制音量
@@ -254,35 +269,39 @@ export class WyPlayerComponent implements OnInit {
   togglePanel(type:string){
     this[type] = !this[type];
     //只要有一个存在就全局的click 事件
-    if(this.showVolumnPanel || this.showPanel){
-      //绑定全局的click事件
-      this.bindDocumentClickListener();
-    }else{
-      this.unbindDocumentClickListener();
-    }
+    // if(this.showVolumnPanel || this.showPanel){
+    //   //绑定全局的click事件
+    //   this.bingFlag = true;
+    //   //this.bindDocumentClickListener();
+    // }else{
+    //   //this.unbindDocumentClickListener();
+    //   this.bingFlag = false;
+    // }
+    this.bingFlag  =(this.showVolumnPanel || this.showPanel);
   }
 
 
 
 
-  unbindDocumentClickListener() {
-    if(this.winClick){ //说明点击了播放器以外的地方
-     this.winClick.unsubscribe();
-     this.winClick = null;
-    }
-  }
-  bindDocumentClickListener() {
-    if(!this.winClick){
-      this.winClick = fromEvent(this.doc,'click').subscribe(()=>{
-        if(!this.selfClick){ //说明点击了播放器以外的地方
-          this.showVolumnPanel = false;
-          this.showPanel = false;
-          this.unbindDocumentClickListener();
-        }
-        this.selfClick = false;
-      })
-    }
-  }
+  // unbindDocumentClickListener() {
+  //   if(this.winClick){ //说明点击了播放器以外的地方
+  //    this.winClick.unsubscribe();
+  //    this.winClick = null;
+  //   }
+  // }
+
+  // bindDocumentClickListener() {
+  //   if(!this.winClick){
+  //     this.winClick = fromEvent(this.doc,'click').subscribe(()=>{
+  //       if(!this.selfClick){ //说明点击了播放器以外的地方
+  //         this.showVolumnPanel = false;
+  //         this.showPanel = false;
+  //         this.unbindDocumentClickListener();
+  //       }
+  //       this.selfClick = false;
+  //     })
+  //   }
+  // }
 
 
   /**
@@ -349,6 +368,25 @@ export class WyPlayerComponent implements OnInit {
    */
   onChangeSong(song:Song){
     this.updateCurrentIndex(this.songList,song);
+  }
+
+
+
+
+
+  onDeleteSong(song:Song){
+
+    this.batchArtionsService.deleteSong(song);
+  }
+
+
+  onClearSong(){
+    this.nzModalService.confirm({
+      nzTitle:'确认清空歌单？',
+      nzOnOk:() => {
+        this.batchArtionsService.clearSong();
+      }
+    })
   }
 
 }
