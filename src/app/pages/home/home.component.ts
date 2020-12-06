@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ɵConsole } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { NzCarouselComponent } from 'ng-zorro-antd/carousel';
 import { map } from 'rxjs/internal/operators';
@@ -40,12 +40,13 @@ export class HomeComponent implements OnInit {
    * @param sheetService
    */
   constructor(
-    private route :ActivatedRoute,
+    private activatedRoute :ActivatedRoute,
+    private router:Router,
     private sheetService:SheetService,
     private batchActionService : BatchActionsService
     ) {
     //从路由中获取数据 并赋值
-    this.route.data.pipe(map(res=>res.homeDatas)).subscribe(([banners,hotTags,songSheet,singers])=>{
+    this.activatedRoute.data.pipe(map(res=>res.homeDatas)).subscribe(([banners,hotTags,songSheet,singers])=>{
       this.banners= banners;
       this.hotTags= hotTags;
       this.songSheetList= songSheet;
@@ -75,7 +76,9 @@ export class HomeComponent implements OnInit {
 
 
 
-
+   toInfo(id:number){
+     this.router.navigate(['/sheetinfo',id]);
+   }
 
 
 

@@ -20,4 +20,8 @@ export class SingleSheetComponent implements OnInit {
   playSheet(id:number){
     this.onPlay.emit(id);
   }
+
+  get converImage() {
+    return this.sheet.picUrl || this.sheet.coverImgUrl;
+  }
 }

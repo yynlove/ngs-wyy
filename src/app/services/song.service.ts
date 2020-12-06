@@ -22,6 +22,15 @@ export class SongService {
   }
 
 
+  //获取歌曲url
+  getSongDetail(ids:string):Observable<Song>{
+    const params = new HttpParams().set("ids",ids);
+    return this.httpClient.get(this.url+'song/detail',{params})
+    .pipe(map((res:{songs:Song})=>res.songs[0]));
+  }
+
+
+
   //获取歌单列表
   getSongList(songs:Song | Song[]):Observable<Song[]>{
     const songsArr = Array.isArray(songs)? songs.slice():[songs];
@@ -49,9 +58,16 @@ export class SongService {
     //map 组装需要的数据格式
     return this.httpClient.get(this.url+ 'lyric',{params})
     .pipe(map((res: { [key:string]:{ lyric:string; }}) => {
+     try{
       return {
         lyric :res.lrc.lyric,
         tlyric:res.tlyric.lyric
+      }
+    }catch(err){
+        return {
+          lyric :'',
+          tlyric:''
+        }
       }
     }));
   }

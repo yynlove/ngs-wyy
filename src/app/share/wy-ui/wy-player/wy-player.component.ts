@@ -59,7 +59,7 @@ export class WyPlayerComponent implements OnInit {
   showPanel = false;
   //判断点击的是音量面板本身
   //selfClick :boolean = false;
-  bingFlag :boolean = false;
+  bindFlag :boolean = false;
 
   //播放模式
   currentMode:PlayMode;
@@ -111,6 +111,8 @@ export class WyPlayerComponent implements OnInit {
   private wactchCurrentIndex(index: number){
     this.currentIndex = index;
   }
+
+
   watchPlayMode(mode: PlayMode): void {
     this.currentMode = mode;
 
@@ -119,12 +121,13 @@ export class WyPlayerComponent implements OnInit {
       if(mode.type === 'random'){
         //打乱一个数组
         list = shuffle(this.songList);
-        //保证当前播放的歌曲不变
-        this.updateCurrentIndex(list,this.currentSong);
-        //更改歌曲的播放顺序
-        this.store$.dispatch(SetPlayList({playList:list}));
-      }
+         //保证当前播放的歌曲不变
+      this.updateCurrentIndex(list,this.currentSong);
+      //更改歌曲的播放顺序
+      this.store$.dispatch(SetPlayList({playList:list}));
       // console.log('suijiList',list);
+      }
+
     }
   }
 
@@ -230,7 +233,7 @@ export class WyPlayerComponent implements OnInit {
     console.log('OnClickOutSide');
     this.showVolumnPanel = false;
     this.showPanel = false;
-    this.bingFlag = false;
+    this.bindFlag = false;
   }
 
 
@@ -277,7 +280,7 @@ export class WyPlayerComponent implements OnInit {
     //   //this.unbindDocumentClickListener();
     //   this.bingFlag = false;
     // }
-    this.bingFlag  =(this.showVolumnPanel || this.showPanel);
+    this.bindFlag  =(this.showVolumnPanel || this.showPanel);
   }
 
 

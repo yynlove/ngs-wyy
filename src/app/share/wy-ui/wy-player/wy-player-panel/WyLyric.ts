@@ -17,7 +17,7 @@ export interface Handler extends BaseLyricLine{
 
 
 //时间正则[00:00.000] [00:00.000]
-const timeExp = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/
+const timeExp = /\[(\d{2}):(\d{2})(?:\.\d{2,3})?\]/
 
 export class WyLycir{
 

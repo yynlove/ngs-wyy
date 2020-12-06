@@ -68,7 +68,9 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     if(changes['songList']){
       console.log('songList',this.songList);
       //切换歌单 肯定是0
-      this.updateCurrentIndex();
+      if(this.currentSong){
+        this.updateCurrentIndex();
+      }
     }
 
     //j监听当前播放歌曲是否改变

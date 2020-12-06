@@ -47,8 +47,19 @@ export type SongSheet = {
   id:number;
   name:string;
   picUrl:string;
+  coverImgUrl:string;
   playCount:number;
+  tags:string[];
+  createTime:number;
+  creator:{ nickname:string,avatarUrl:string };
+  description:string;
+  subscribedCount:number;
+  shareCount:number;
+  subscribed:boolean;
+  commentCount:number;
   tracks:Song[];
+  userId:number;
+
 }
 
 
@@ -64,4 +75,11 @@ export type Lyric = {
   lyric:string; //歌词
   tlyric:string; //翻译歌词
 
+}
+
+
+//歌单
+export type SheetList={
+  playlists: SongSheet[],
+  total:number
 }

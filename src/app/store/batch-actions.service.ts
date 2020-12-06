@@ -13,6 +13,7 @@ import { getPlayer } from './selectors/player.selector';
 })
 export class BatchActionsService {
 
+
   private playerState : PlayState;
   constructor(    //注入Store
     private store$: Store<AppStoreModule>) {
@@ -38,6 +39,51 @@ export class BatchActionsService {
 
   }
 
+
+  insertSong(song:Song,isPlay= false){
+      const songList = this.playerState.songList.slice();
+      const playList = this.playerState.playList.slice();
+
+      let insertIndex = this.playerState.currentIndex;
+      let pIndex = findIndex(playList,song);
+      if(pIndex>-1){
+        //歌曲在播放列表已存在
+        if(isPlay){
+          insertIndex = pIndex;
+        }
+      }else{
+          songList.push(song);
+          playList.push(song);
+          if(isPlay){
+            insertIndex = songList.length -1;
+          }
+        }
+
+        this.store$.dispatch(SetSongList({songList}));
+        this.store$.dispatch(SetPlayList({playList}));
+
+        if(insertIndex !== this.playerState.currentIndex){
+          this.store$.dispatch(SetCurrentIndex({currentIndex:insertIndex}));
+        }
+
+    }
+
+
+    insertSongs(list: Song[]) {
+      const songList = this.playerState.songList.slice();
+      const playList = this.playerState.playList.slice();
+
+      list.forEach(item =>{
+        const pIndex =   findIndex(playList,item);
+        if(pIndex === -1){
+          playList.push(item);
+          songList.push(item);
+        }
+      });
+      this.store$.dispatch(SetSongList({songList}));
+      this.store$.dispatch(SetPlayList({playList}));
+
+    }
 
   //删除歌曲
   deleteSong(song:Song){

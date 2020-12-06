@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzNoAnimationModule } from 'ng-zorro-antd/core/no-animation';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -10,25 +9,35 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { WyUiModule } from './wy-ui/wy-ui.module';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzMessageModule } from 'ng-zorro-antd/message';
 @NgModule({
 
   imports: [
     CommonModule,
     FormsModule,
-    NzButtonModule,
     NzLayoutModule,
     NzMenuModule,
     NzInputModule,
     NzIconModule,
+    NzRadioModule,
     NzNoAnimationModule,
     NzCarouselModule,
     NzModalModule,
-    WyUiModule,
+    NzPaginationModule,
+    NzTagModule,
+    NzButtonModule,
+    NzTableModule,
+    NzMessageModule,
+    WyUiModule
   ],
   exports:[
     CommonModule,
     FormsModule,
-    NzButtonModule,
     NzLayoutModule,
     NzMenuModule,
     NzInputModule,
@@ -36,9 +45,13 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzNoAnimationModule,
     NzCarouselModule,
     NzModalModule,
-    WyUiModule,
-
-
+    NzPaginationModule,
+    NzRadioModule,
+    NzTagModule,
+    NzButtonModule,
+    NzTableModule,
+    NzMessageModule,
+    WyUiModule
   ],
 
 })
