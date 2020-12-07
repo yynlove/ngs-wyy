@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { API_CONFIG, ServicesModule } from './services.module';
 import { map } from 'rxjs/internal/operators';
 import queryString from 'query-string';
-import { Singer } from './data-types/common.type';
+import { Singer, SingerDetail } from './data-types/common.type';
 
 type SingerParams={
   offset:number,
@@ -32,5 +32,21 @@ export class SingerService {
 
   }
 
+  /**
+   * 获取歌手部分信息和热门歌曲
+   */
+  getSingerDetail(id:string):Observable<SingerDetail>{
+    const params = new HttpParams().set("id",id);
+    return this.httpClient.get(this.url+ "artists",{params})
+    .pipe(map( res => res as SingerDetail ));
+  }
 
+/**
+ * 获取相似歌手
+ */
+ getSimiSinger(id:string):Observable<Singer[]>{
+    const params = new HttpParams().set("id",id);
+    return this.httpClient.get(this.url+ "simi/artist",{params})
+    .pipe(map((res :{artists:Singer[]}) => res.artists ));
+  }
 }

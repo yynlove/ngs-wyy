@@ -31,8 +31,6 @@ export class SheetInfoComponent implements OnInit ,OnDestroy{
   }
 
   currentSong : Song;
-
-  private appStore$ : Observable<AppStoreModule>;
   private destroy$ = new Subject<void>();
   currentIndex:number = -1;
 

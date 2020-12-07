@@ -20,7 +20,15 @@ export type Singer ={
   id:number;
   name :string;
   picUrl:string;
+  alias:string[];
   albumSize:number;
+}
+
+
+export type SingerDetail={
+  artist:Singer;
+  hotSongs: Song[];
+
 }
 
 
