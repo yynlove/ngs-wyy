@@ -17,8 +17,9 @@ export class SingleSheetComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  playSheet(id:number){
+  playSheet(evt:MouseEvent,id:number){
     this.onPlay.emit(id);
+    evt.stopPropagation();
   }
 
   get converImage() {

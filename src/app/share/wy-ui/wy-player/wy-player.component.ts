@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { fromEvent, Subscription } from 'rxjs';
@@ -80,7 +81,8 @@ export class WyPlayerComponent implements OnInit {
     private store$ : Store<AppStoreModule>,
     @Inject(DOCUMENT) private doc :Document,
     private batchArtionsService : BatchActionsService,
-    private nzModalService:NzModalService
+    private nzModalService:NzModalService,
+    private router:Router
   ) {
     const appStore$ = this.store$.pipe(select(getPlayer));
     //监听状态管理的变化
@@ -390,6 +392,17 @@ export class WyPlayerComponent implements OnInit {
         this.batchArtionsService.clearSong();
       }
     })
+  }
+
+
+
+  toInfo(path:[string,number]){
+    if(path[1]){
+      this.router.navigate(path);
+      this.showPanel = false;
+      this.showVolumnPanel  = false;
+
+    }
   }
 
 }

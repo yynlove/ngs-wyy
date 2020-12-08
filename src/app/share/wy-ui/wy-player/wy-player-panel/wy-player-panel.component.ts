@@ -29,6 +29,7 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   @Output() onDeleteSong = new EventEmitter<Song>();
   //清空歌单
   @Output() onClearSong = new EventEmitter<void>();
+  @Output() onToInfo = new EventEmitter<[string,number]>();
 
   //使用viewchildren是因为 有一个歌词也需要滚动
   @ViewChildren(WyScrollComponent) private wyScroll : QueryList<WyScrollComponent>;
@@ -215,4 +216,9 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   ngOnInit(): void {
   }
 
+
+  toInfo(evt:MouseEvent,path : [string,number]){
+    evt.stopPropagation();
+    this.onToInfo.emit(path);
+  }
 }
