@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SearchResult } from './services/data-types/common.type';
 import { SearchService } from './services/search.service';
 
 @Component({
@@ -20,14 +21,18 @@ export class AppComponent {
   ]
 
 
+  searchResult :SearchResult;
+
   constructor(private searchService:SearchService){}
 
   onSearch(value:string){
     if(value){
       this.searchService.search(value).subscribe(res =>{
-        console.log('res',res);
+        this.searchResult = res;
       })
 
+    }else{
+      this.searchResult = {};
     }
   }
 

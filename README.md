@@ -45,4 +45,6 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 >npm install @better-scroll/core --save
 >npm install @better-scroll/scroll-bar --save
 >npm install @better-scroll/mouse-wheel --save
+>npm install --save @angular/material @angular/cdk @angular/animations
+
 
