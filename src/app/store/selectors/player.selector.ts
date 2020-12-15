@@ -13,3 +13,4 @@ export const getPlayMode = createSelector(selectPlayerStates,(state:PlayState) =
 export const getCurrentIndex = createSelector(selectPlayerStates,(state:PlayState) => state.currentIndex);
 //根据当前索引 和歌曲列表获取当前播放歌曲
 export const getCurrentSong = createSelector(selectPlayerStates,({playList,currentIndex}:PlayState) => playList[currentIndex]);
+export const getCurrentAction = createSelector(selectPlayerStates,(state:PlayState) => state.currentAction);

@@ -19,7 +19,7 @@
 
           <div class="user f-cb">
 
-            <div class="singers clear-fix">
+            <div class="singers clearfix">
               <span>歌手：</span>
               <ul class="clear-fix">
                 <li *ngFor="let singer of song.ar;last as isLast">
@@ -56,7 +56,7 @@
             </div>
           </div>
 
-          <div class="toggle-expand" (click)="toggleLyric()">
+          <div class="toggle-expand" (click)="toggleLyric()" [hidden]="!lyric.length">
             <span>{{controlLyric.label}}</span>
             <i nz-icon [nzType]="controlLyric.isconCls" nzTheme="outline"></i>
           </div>

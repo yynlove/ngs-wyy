@@ -78,14 +78,23 @@ export class WySearchComponent implements OnInit,AfterViewInit,OnChanges {
       scrollStrategy:this.overlay.scrollStrategies.reposition()
     });
     //创建一个门户
-    const panelProtal = new ComponentPortal(WySearchPanelComponent,this.viewContainerRef)
+    const panelProtal = new ComponentPortal(WySearchPanelComponent,this.viewContainerRef);
     //浮层关联门户
     const panelRef =  this.overlayRef.attach(panelProtal);
+    //为动态组件赋值
+    panelRef.instance.searchResult = this.searchResult;
+
     //点击蒙层 则关闭浮层
     this.overlayRef.backdropClick().subscribe(() =>{
       this.hideOverlayPanel()
     })
   }
+
+
+  onBulr(){
+    this.hideOverlayPanel();
+  }
+
   //隐藏浮层组件
   hideOverlayPanel() {
     if(this.overlayRef && this.overlayRef.hasAttached){

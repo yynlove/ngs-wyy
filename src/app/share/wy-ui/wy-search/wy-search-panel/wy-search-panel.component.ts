@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { SearchResult } from 'src/app/services/data-types/common.type';
 
 @Component({
   selector: 'app-wy-search-panel',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WySearchPanelComponent implements OnInit {
 
-  constructor() { }
+  searchResult:SearchResult;
+
+  constructor(private router:Router) { }
 
   ngOnInit(): void {
+  }
+
+  //点击跳转
+  toInfo(path:[string,number]){
+    this.router.navigate(path);
   }
 
 }

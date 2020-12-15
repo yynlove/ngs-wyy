@@ -1,14 +1,16 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { fromEvent, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Song } from 'src/app/services/data-types/common.type';
 import { AppStoreModule } from 'src/app/store';
-import { SetCurrentIndex, SetPlayList, SetPlayMode, SetSongList } from 'src/app/store/actions/palyer-action';
+import { SetCurrentAction, SetCurrentIndex, SetPlayList, SetPlayMode, SetSongList } from 'src/app/store/actions/palyer-action';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
-import { getCurrentIndex, getCurrentSong, getPlayer, getPlayList, getPlayMode, getSongList } from 'src/app/store/selectors/player.selector';
+import { CurrentActions } from 'src/app/store/reducers/player.reducer';
+import { getCurrentAction, getCurrentIndex, getCurrentSong, getPlayer, getPlayList, getPlayMode, getSongList } from 'src/app/store/selectors/player.selector';
 import { findIndex, shuffle } from 'src/app/util/array';
 import { PlayMode } from './player-type';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
@@ -29,12 +31,28 @@ const modeTypes:PlayMode[] =[{
 @Component({
   selector: 'app-wy-player',
   templateUrl: './wy-player.component.html',
-  styleUrls: ['./wy-player.component.less']
+  styleUrls: ['./wy-player.component.less'],
+  //定义动画
+  animations:[
+    trigger('showHide',[
+    state('show',style({bottom:0})),
+    state('hide',style({bottom:-71})),
+    transition('show=>hide',[animate('0.3s')]),
+    transition('hide=>show',[animate('0.1s')])
+  ])
+]
 })
 export class WyPlayerComponent implements OnInit {
  //表示一个百分比
   percent = 0;
   bufferPercent = 0;
+
+  //是否显示或隐藏播放器 动画
+  showPlayer:string = 'hide';
+  //是否已经锁住
+  isLocked = false;
+  //是否正在动画中
+  animating = false;
 
   songList : Song[];
   playList : Song[];
@@ -91,8 +109,10 @@ export class WyPlayerComponent implements OnInit {
     appStore$.pipe( select(getCurrentIndex) ).subscribe(index => this.wactchCurrentIndex(index));
     appStore$.pipe(select( getPlayMode) ).subscribe(mode => this.watchPlayMode(mode));
     appStore$.pipe(select( getCurrentSong) ).subscribe(song => this.watchCurrentSong(song));
+    appStore$.pipe(select( getCurrentAction) ).subscribe(action => this.watchCurrentArchion(action));
 
   }
+
 
 
   ngOnInit(): void {
@@ -139,6 +159,12 @@ export class WyPlayerComponent implements OnInit {
       this.currentSong = song;
       this.duration = song.dt /1000; //毫秒换算秒
     }
+  }
+
+
+  watchCurrentArchion(currentAction:  CurrentActions): void {
+    console.log('currentAction',CurrentActions[currentAction]);
+    this.store$.dispatch(SetCurrentAction({ currentAction:CurrentActions.Other }));
   }
 
   //播放结束
@@ -402,6 +428,12 @@ export class WyPlayerComponent implements OnInit {
       this.showPanel = false;
       this.showVolumnPanel  = false;
 
+    }
+  }
+
+  togglePlayer(type:string){
+    if(!this.isLocked && !this.animating){
+      this.showPlayer = type;
     }
   }
 

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { SearchResult } from './services/data-types/common.type';
 import { SearchService } from './services/search.service';
+import { isEmptyObject } from './util/tools';
 
 @Component({
   selector: 'app-root',
@@ -28,12 +29,27 @@ export class AppComponent {
   onSearch(value:string){
     if(value){
       this.searchService.search(value).subscribe(res =>{
-        this.searchResult = res;
+        this.searchResult = this.highlightKetWords(value,res);
       })
 
     }else{
       this.searchResult = {};
     }
+  }
+  highlightKetWords(keywords: string, res: SearchResult): SearchResult {
+    if(!isEmptyObject(res)){
+      const reg = new RegExp(keywords,'ig');
+      ['songs','artists','playlists'].forEach(type =>{
+        if(res[type]){
+          res[type].forEach(item => {
+            item.name = item.name.replace(reg,'<span class="highlight">$&</span>')
+          });
+        }
+      });
+      return res;
+    }
+
+
   }
 
 }
