@@ -2,11 +2,11 @@
   [@showHide]="showPlayer"
   appClickoutside
   [bindFlag]="bindFlag"
-  (onClickOutSide)="onClickOutSide()"
+  (onClickOutSide)="onClickOutSide($event)"
   (mouseenter)="togglePlayer('show')"
   (mouseleave)="togglePlayer('hide')"
   (@showHide.start)="animating= true"
-  (@showHide.done)="animating = false"
+  (@showHide.done)="onAnimating($event)"
   >
   <div class="lock" (click)="isLocked=!isLocked">
     <div class="left"><i [class.locked]= "isLocked"></i></div>
@@ -59,7 +59,7 @@
       <div class="ctrl">
         <i class="volume" title="音量" (click)="toggleVolPanel()"></i>
         <i [ngClass]="currentMode.type" [title]="currentMode.label" (click)="changeMode()"></i>
-        <p class="open" (click)="toggleListPanel()">
+        <p  nz-tooltip [nzTooltipTitle]="currentTooltip.title" [nzTooltipVisible]="currentTooltip.show" nzTooltipOverlayClassName="tip-bg" class="open" (click)="toggleListPanel()">
           <span></span>
         </p>
         <div class="control-vol" [hidden]=" !showVolumnPanel">
@@ -90,5 +90,6 @@
   [src]= "currentSong?.url"
   (timeupdate)="onTimeUpdate($event)"
   (ended) ="onEnded()"
+  (error)="onError()"
   ></audio>
 </div>

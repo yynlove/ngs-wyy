@@ -8,7 +8,7 @@ import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.compon
 import { WyScrollComponent } from './wy-scroll/wy-scroll.component';
 import { ClickoutsideDirective } from '../../directives/clickoutside.directive';
 
-
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 @NgModule({
   declarations: [WyPlayerComponent,FormatTimePipe, WyPlayerPanelComponent, WyScrollComponent,ClickoutsideDirective],
@@ -16,7 +16,7 @@ import { ClickoutsideDirective } from '../../directives/clickoutside.directive';
     CommonModule,
     WySliderModule,
     FormsModule,
-
+    NzToolTipModule
   ],
   exports:[
     WyPlayerComponent,

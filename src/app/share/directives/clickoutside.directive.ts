@@ -17,10 +17,12 @@ export class ClickoutsideDirective implements OnChanges {
     if (changes['bindFlag'] && !changes['bindFlag'].firstChange) {
       if (this.bindFlag) {
         this.handleClick = this.rd.listen(this.doc, 'click', evt => {
+          //发射点击的htmlElement
+          const targer = evt.target;
           // console.log('doc click');
-          const isContain = this.el.nativeElement.contains(evt.target);
+          const isContain = this.el.nativeElement.contains(targer);
           if (!isContain) {
-            this.onClickOutSide.emit();
+            this.onClickOutSide.emit(targer);
           }
         });
       }else {

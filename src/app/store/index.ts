@@ -3,6 +3,7 @@ import { StoreModule } from '@ngrx/store';
 import { playReducer } from './reducers/player.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
+import { memberReducer } from './reducers/member.reducer';
 
 
 
@@ -10,7 +11,7 @@ import { environment } from 'src/environments/environment';
   declarations: [],
   imports: [
     //注册playReducer
-    StoreModule.forRoot({player:playReducer},{
+    StoreModule.forRoot({player:playReducer,member:memberReducer},{
       //配置项
       runtimeChecks: {
         strictStateImmutability: true,

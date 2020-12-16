@@ -1,13 +1,13 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { animate, state, style, transition, trigger,AnimationEvent } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { Song } from 'src/app/services/data-types/common.type';
 import { AppStoreModule } from 'src/app/store';
-import { SetCurrentAction, SetCurrentIndex, SetPlayList, SetPlayMode, SetSongList } from 'src/app/store/actions/palyer-action';
+import { SetCurrentAction, SetCurrentIndex, SetPlayList, SetPlayMode } from 'src/app/store/actions/palyer-action';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { CurrentActions } from 'src/app/store/reducers/player.reducer';
 import { getCurrentAction, getCurrentIndex, getCurrentSong, getPlayer, getPlayList, getPlayMode, getSongList } from 'src/app/store/selectors/player.selector';
@@ -15,6 +15,10 @@ import { findIndex, shuffle } from 'src/app/util/array';
 import { PlayMode } from './player-type';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
 
+enum TooltopAction{
+  Add = "已添加到列表",
+  Play= "播放此歌曲"
+}
 
 //播放模式
 const modeTypes:PlayMode[] =[{
@@ -53,6 +57,12 @@ export class WyPlayerComponent implements OnInit {
   isLocked = false;
   //是否正在动画中
   animating = false;
+
+  //操作文本提示
+  currentTooltip={
+    title:"",
+    show:false
+  }
 
   songList : Song[];
   playList : Song[];
@@ -154,17 +164,42 @@ export class WyPlayerComponent implements OnInit {
   }
 
   watchCurrentSong(song: Song): void {
-    console.log("player-song>>>",song);
+    //如果没有歌曲则触发错误事件
+    this.currentSong = song;
     if(song){
-      this.currentSong = song;
       this.duration = song.dt /1000; //毫秒换算秒
+    }
+  }
+
+  //动画结束，并判断是否需要显示文字提示
+  onAnimating(event:AnimationEvent){
+    this.animating = false;
+    if(event.toState === 'show' && this.currentTooltip.title){
+      this.showTooltip();
     }
   }
 
 
   watchCurrentArchion(currentAction:  CurrentActions): void {
-    console.log('currentAction',CurrentActions[currentAction]);
+    //通过状态中获取枚举 title
+    const title =TooltopAction[CurrentActions[currentAction]];
+    if(title){
+      this.currentTooltip.title = title;
+      if(this.showPlayer === 'hide'){
+        this.togglePlayer('show');
+      }else{
+        this.showTooltip();
+      }
+    }
     this.store$.dispatch(SetCurrentAction({ currentAction:CurrentActions.Other }));
+  }
+  //显示消息 并之后延时初始化
+  showTooltip() {
+    this.currentTooltip.show = true;
+    timer(1500).subscribe(()=>{this.currentTooltip={
+      title:"",
+      show:false
+    }})
   }
 
   //播放结束
@@ -176,6 +211,11 @@ export class WyPlayerComponent implements OnInit {
     }else{
       this.onNext(this.currentIndex + 1);
     }
+  }
+
+  onError(){
+    this.playing= false;
+    this.bufferPercent = 0;
   }
 
 
@@ -257,11 +297,13 @@ export class WyPlayerComponent implements OnInit {
     this.store$.dispatch(SetPlayMode({playMode:modeType}));
   }
 
-  onClickOutSide(){
-    console.log('OnClickOutSide');
-    this.showVolumnPanel = false;
-    this.showPanel = false;
-    this.bindFlag = false;
+  onClickOutSide(event:HTMLElement){
+    //点击删除按钮会移除html 该指令则判断点击的非播放器，因此会隐藏，取消删除时隐藏面板
+    if(event.dataset.art !== 'delete'){
+      this.showVolumnPanel = false;
+      this.showPanel = false;
+      this.bindFlag = false;
+    }
   }
 
 
