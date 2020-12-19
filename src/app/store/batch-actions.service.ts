@@ -3,8 +3,11 @@ import { select, Store } from '@ngrx/store';
 import { AppStoreModule } from '.';
 import { Song } from '../services/data-types/common.type';
 import { findIndex, shuffle } from '../util/array';
+import { SetModaalVisible, SetModalType } from './actions/member-action';
 import { SetCurrentAction, SetCurrentIndex, SetPlayList, SetSongList } from './actions/palyer-action';
+import { MemberState, ModalTypes } from './reducers/member.reducer';
 import { CurrentActions, PlayState } from './reducers/player.reducer';
+import { getModal, getModalVisible } from './selectors/Menber.selector';
 import { getPlayer } from './selectors/player.selector';
 
 
@@ -15,9 +18,13 @@ export class BatchActionsService {
 
 
   private playerState : PlayState;
+
+  private menberState:MemberState;
+
   constructor(    //注入Store
     private store$: Store<AppStoreModule>) {
     this.store$.pipe(select(getPlayer)).subscribe(res => this.playerState = res);
+    this.store$.pipe(select(getModal)).subscribe(res => this.menberState = res);
   }
 
 
@@ -116,5 +123,12 @@ export class BatchActionsService {
     this.store$.dispatch(SetPlayList({playList:[]}));
     this.store$.dispatch(SetCurrentIndex({currentIndex:-1}));
     this.store$.dispatch(SetCurrentAction({ currentAction:CurrentActions.Clear }));
+  }
+
+
+  //控制登录面板组件显示
+  controlModal(modalVisible?:boolean, modalType?:ModalTypes){
+    this.store$.dispatch(SetModaalVisible({modalVisible:modalVisible}))
+    this.store$.dispatch(SetModalType({modalType:modalType}))
   }
 }

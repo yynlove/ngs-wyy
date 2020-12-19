@@ -1,11 +1,16 @@
-<div class="m-layer">
-  <div class="zbar">
+<div class="m-layer"
+[@showModal]="showModal"
+#modalContainer
+cdkDrag
+cdkDragBoundary='.cdk-overlay-container'
+>
+  <div class="zbar" cdkDragHandle>
     <div class="zttl f-thide">
       这是标题
     </div>
     <ng-container></ng-container>
   </div>
-  <div class="zcls" title="关闭">
+  <div class="zcls" title="关闭" (click)="hide()">
 
   </div>
   <app-wy-layer-default>

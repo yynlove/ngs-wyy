@@ -82,7 +82,11 @@ export class HomeComponent implements OnInit {
 
 
 
+   openModal(){
+     console.log('打开面板');
 
+    this.batchActionService.controlModal(true);
+   }
 
 
   ngOnInit(): void {
