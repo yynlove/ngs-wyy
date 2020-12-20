@@ -8,12 +8,18 @@ cdkDragBoundary='.cdk-overlay-container'
     <div class="zttl f-thide">
       这是标题
     </div>
-    <ng-container></ng-container>
+    <ng-container [ngSwitch]="currentModalType">
+      <ng-container *ngSwitchCase="'loginByPhone'">
+        <ng-content select="[name=login]"></ng-content>
+      </ng-container>
+      <ng-container *ngSwitchCase="'register'">
+        <p>registerregisterregisterregisterregister</p>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <ng-content></ng-content>
+      </ng-container>
+    </ng-container>
   </div>
   <div class="zcls" title="关闭" (click)="hide()">
-
   </div>
-  <app-wy-layer-default>
-
-  </app-wy-layer-default>
 </div>

@@ -7,6 +7,7 @@ import { Banner, HotTag, Singer, SongSheet } from 'src/app/services/data-types/c
 import { SheetService } from 'src/app/services/sheet.service';
 import { AppStoreModule } from 'src/app/store';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
+import { ModalTypes } from 'src/app/store/reducers/member.reducer';
 
 import { PlayState } from 'src/app/store/reducers/player.reducer';
 import { getPlayer } from 'src/app/store/selectors/player.selector';
@@ -83,9 +84,8 @@ export class HomeComponent implements OnInit {
 
 
    openModal(){
-     console.log('打开面板');
 
-    this.batchActionService.controlModal(true);
+    this.batchActionService.controlModal(true,ModalTypes.Default);
    }
 
 

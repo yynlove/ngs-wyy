@@ -27,8 +27,10 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
 
   //控制组件是否显示
   showModal:'show'|'hide'='hide';
+
+  currentModalType = ModalTypes.Default;
   private visible = false;
-  private currentModalType = ModalTypes.Default;
+
   //浮块
   private overleyRef:OverlayRef;
   //浮块展开时 滚动属性
@@ -36,7 +38,7 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
   //浮块容器
   private overlayContainerEl:HTMLElement
 
-  @ViewChild('modalContainer',{static:true}) private modalRef :ElementRef;
+  @ViewChild('modalContainer',{static:false}) private modalRef :ElementRef;
   //监听游览器窗口变化
   private resizeHandler:()=>void;
 
@@ -61,20 +63,20 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
       this.watchModalType(type);
     })
     this.scrollStrategy =this.overlay.scrollStrategies.block();
-    this.overlayContainerEl = this.overlayContainer.getContainerElement();
+
   }
 
 
 
   watchModalType(type: ModalTypes) {
    if(this.currentModalType !== type){
-     this.currentModalType = type;
-
+      this.currentModalType = type;
+      this.cdr.markForCheck();
    }
   }
   //组件是否可见
   watchModalVisible(visib: boolean) {
-    console.log('visible',visib);
+
 
     if(this.visible !== visib){
       this.visible = visib;
@@ -84,9 +86,6 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
 
 
   handleVisiblechange(visible: boolean) {
-    console.log('this.showModal',this.showModal);
-
-
     if(visible){
       //显示 禁止滚动
       this.showModal = 'show';
@@ -125,10 +124,9 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
 
 
   ngAfterViewInit(): void {
-    this.listenResizeToCenter();
     //获取该浮块容器
     this.overlayContainerEl = this.overlayContainer.getContainerElement();
-    console.log('this.overlayContainerEl',this.overlayContainerEl);
+    this.listenResizeToCenter();
 
   }
 
@@ -137,10 +135,7 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
   }
 
   listenResizeToCenter() {
-
-
    const modal = this.modalRef.nativeElement;
-   console.log('modal',modal);
    const modalSize = this.getHightDomSize(modal);
    this.keepCenter(modal,modalSize);
    this.resizeHandler = this.rd.listen('window','resize',()=> this.keepCenter(modal,modalSize));
@@ -148,6 +143,9 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
 
 
   private keepCenter(modal: HTMLElement, modalSize: { w: number; h:number}) {
+    // console.log('this.getWindowsize()',this.getWindowsize());
+    // console.log('modalSize',modalSize);
+
     const left =(this.getWindowsize().w-modalSize.w) /2;
     const top = (this.getWindowsize().h -modalSize.h) /2;
 

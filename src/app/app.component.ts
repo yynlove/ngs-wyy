@@ -1,6 +1,12 @@
 import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { SearchResult } from './services/data-types/common.type';
 import { SearchService } from './services/search.service';
+import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
+import { AppStoreModule } from './store';
+import { SetModalType } from './store/actions/member-action';
+import { BatchActionsService } from './store/batch-actions.service';
+import { ModalTypes } from './store/reducers/member.reducer';
 import { isEmptyObject } from './util/tools';
 
 @Component({
@@ -24,7 +30,9 @@ export class AppComponent {
 
   searchResult :SearchResult;
 
-  constructor(private searchService:SearchService){}
+  constructor(private searchService:SearchService,
+    private store$:Store<AppStoreModule>,
+    private batchActionService : BatchActionsService){}
 
   onSearch(value:string){
     if(value){
@@ -36,6 +44,11 @@ export class AppComponent {
       this.searchResult = {};
     }
   }
+  /**
+   *
+   * @param keywords 高亮搜索歌词
+   * @param res
+   */
   highlightKetWords(keywords: string, res: SearchResult): SearchResult {
     if(!isEmptyObject(res)){
       const reg = new RegExp(keywords,'ig');
@@ -48,7 +61,19 @@ export class AppComponent {
       });
       return res;
     }
+  }
 
+  onChangeModalTypes(type = ModalTypes.Default){
+    this.store$.dispatch(SetModalType({modalType:type}))
+  }
+
+
+  openModal(type: string){
+    this.batchActionService.controlModal(true,<ModalTypes>type);
+  }
+
+  onLogin(params:LoginParams){
+    console.log('params',params);
 
   }
 

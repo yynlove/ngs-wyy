@@ -7,7 +7,7 @@ import { SetModaalVisible, SetModalType } from './actions/member-action';
 import { SetCurrentAction, SetCurrentIndex, SetPlayList, SetSongList } from './actions/palyer-action';
 import { MemberState, ModalTypes } from './reducers/member.reducer';
 import { CurrentActions, PlayState } from './reducers/player.reducer';
-import { getModal, getModalVisible } from './selectors/Menber.selector';
+import { getModal } from './selectors/Menber.selector';
 import { getPlayer } from './selectors/player.selector';
 
 
@@ -127,8 +127,11 @@ export class BatchActionsService {
 
 
   //控制登录面板组件显示
-  controlModal(modalVisible?:boolean, modalType?:ModalTypes){
-    this.store$.dispatch(SetModaalVisible({modalVisible:modalVisible}))
-    this.store$.dispatch(SetModalType({modalType:modalType}))
+  controlModal(modalVisible =true, modalType?:ModalTypes){
+    if(modalType){
+      this.store$.dispatch(SetModalType({modalType}));
+    }
+    this.store$.dispatch(SetModaalVisible({modalVisible}));
+
   }
 }

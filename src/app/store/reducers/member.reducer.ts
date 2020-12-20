@@ -1,11 +1,6 @@
 
 import { Action, createReducer, on } from '@ngrx/store';
-import { Song } from 'src/app/services/data-types/common.type';
-import { PlayCountPipe } from 'src/app/share/pipes/play-count.pipe';
-import { PlayMode } from 'src/app/share/wy-ui/wy-player/player-type';
 import { SetModaalVisible, SetModalType } from '../actions/member-action';
-import { SetCurrentAction, SetCurrentIndex, SetPlaying, SetPlayList, SetPlayMode, SetSongList } from '../actions/palyer-action';
-
 //定义弹窗类型
 export enum ModalTypes {
   Register ='register',
