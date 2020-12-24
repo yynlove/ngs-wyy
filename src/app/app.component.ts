@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { SearchResult } from './services/data-types/common.type';
+import { User } from './services/data-types/member.type';
+import { MemberServices } from './services/member.service';
 import { SearchService } from './services/search.service';
 import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
 import { AppStoreModule } from './store';
@@ -30,9 +33,13 @@ export class AppComponent {
 
   searchResult :SearchResult;
 
+  user:User;
+
   constructor(private searchService:SearchService,
     private store$:Store<AppStoreModule>,
-    private batchActionService : BatchActionsService){}
+    private batchActionService : BatchActionsService,
+    private memberServices:MemberServices,
+    private nzMessageService:NzMessageService){}
 
   onSearch(value:string){
     if(value){
@@ -74,7 +81,24 @@ export class AppComponent {
 
   onLogin(params:LoginParams){
     console.log('params',params);
+    this.memberServices.doLogin(params).subscribe(user=>{
+      this.user = user;
+      this.batchActionService.controlModal(false);
+      this.alertMessage('success',"登录成功");
 
+      localStorage.setItem('wyUserId',user.profile.userId.toString());
+      if(params.remember){
+        localStorage.setItem('wyRememberLogin',JSON.stringify(user));
+      }else{
+        localStorage.removeItem('wyRememberLogin');
+      }
+    },({error}) =>{
+      this.alertMessage('error',error.message);
+    });
+  }
+
+  alertMessage(type: string, msg: string) {
+    this.nzMessageService.create(type,msg);
   }
 
 }

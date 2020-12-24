@@ -20,9 +20,9 @@ export class WyLayerLoginComponent implements OnInit {
 
   @Output() onLogin = new EventEmitter<LoginParams>();
 
-  formModal:FormGroup;
+  formModel:FormGroup;
   constructor(private fb:FormBuilder) {
-    this.formModal = this.fb.group({
+    this.formModel = this.fb.group({
       phone:['',[Validators.required,Validators.pattern(/^1\d{10}$/)]],
       password:['',[Validators.required,Validators.minLength(6)]],
       remember:[false]
@@ -34,8 +34,8 @@ export class WyLayerLoginComponent implements OnInit {
 
 
   onSubmit(){
-    if(this.formModal.valid){
-      this.onLogin.emit(this.formModal.value);
+    if(this.formModel.valid){
+      this.onLogin.emit(this.formModel.value);
     }
   }
 

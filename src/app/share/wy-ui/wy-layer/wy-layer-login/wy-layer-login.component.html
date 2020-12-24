@@ -1,8 +1,9 @@
+
 <div class="login-phone modal-content">
   <div class="modal-wrap">
-    <form nz-form  class="login-form" [formGroup]="formModal" (ngSubmit)="onSubmit()">
+    <form nz-form class="login-form" [formGroup]="formModel" (ngSubmit)="onSubmit()">
       <nz-form-item>
-        <nz-form-control nzHasFeedback="true" nzErrorTip="请输入正确的手机号">
+        <nz-form-control nzHasFeedback nzErrorTip="请输入正确的手机号">
           <nz-input-group nzPrefixIcon="mobile">
             <input type="tel" nz-input placeholder="请输入手机号" formControlName="phone">
           </nz-input-group>
@@ -10,22 +11,20 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-control nzHasFeedback="true" nzErrorTip="请输入正确的密码">
+        <nz-form-control nzHasFeedback nzErrorTip="请输入正确的密码">
           <nz-input-group nzPrefixIcon="lock">
             <input type="password" nz-input placeholder="请输入密码" formControlName="password">
           </nz-input-group>
         </nz-form-control>
       </nz-form-item>
 
+
       <nz-form-item>
         <nz-form-control>
           <div class="tools">
-            <label nz-checkbox class="remember" formControlName="remember">
-              <span>记住密码</span>
-            </label>
-          </div>
-          <button nz-button class="login-form-button" [disabled]="!formModal.valid" nzType="primary" nzBlock>登陆</button>
-
+            <label nz-checkbox class="remember" formControlName="remember"><span>记住密码</span></label>
+            </div>
+            <button nz-button class="login-form-button" [disabled]="!formModel.valid" nzType="primary" nzBlock>登陆</button>
         </nz-form-control>
       </nz-form-item>
     </form>
@@ -33,6 +32,6 @@
 </div>
 
 <div class="m-footer clearfix">
-  <a (click)="onChangeModalTypes.emit()">< 其他登录方式</a>
+  <a (click)="onChangeModalTypes.emit('defult')"><  其它登陆方式</a>
   <a (click)="onChangeModalTypes.emit('register')">没有账号？免费注册</a>
 </div>
