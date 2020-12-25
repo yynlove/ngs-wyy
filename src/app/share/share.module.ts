@@ -15,6 +15,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 @NgModule({
 
   imports: [
@@ -33,6 +34,7 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
     NzButtonModule,
     NzTableModule,
     NzMessageModule,
+    NzAvatarModule,
     WyUiModule
   ],
   exports:[
@@ -51,6 +53,7 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
     NzButtonModule,
     NzTableModule,
     NzMessageModule,
+    NzAvatarModule,
     WyUiModule
   ],
 

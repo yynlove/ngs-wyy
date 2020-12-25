@@ -35,11 +35,21 @@ export class AppComponent {
 
   user:User;
 
+  wyRememberLogin:LoginParams;
+
   constructor(private searchService:SearchService,
     private store$:Store<AppStoreModule>,
     private batchActionService : BatchActionsService,
     private memberServices:MemberServices,
-    private nzMessageService:NzMessageService){}
+    private nzMessageService:NzMessageService
+    ){
+      const userId = localStorage.getItem("wyUserId");
+      this.memberServices.getUserDetail(userId).subscribe(user=>{
+        this.user = user;
+      });
+      this.wyRememberLogin = JSON.parse(localStorage.getItem('wyRememberLogin'));
+
+    }
 
   onSearch(value:string){
     if(value){
@@ -88,13 +98,24 @@ export class AppComponent {
 
       localStorage.setItem('wyUserId',user.profile.userId.toString());
       if(params.remember){
-        localStorage.setItem('wyRememberLogin',JSON.stringify(user));
+        localStorage.setItem('wyRememberLogin',JSON.stringify(params));
       }else{
         localStorage.removeItem('wyRememberLogin');
       }
     },({error}) =>{
       this.alertMessage('error',error.message);
     });
+  }
+
+
+  logout(){
+    this.memberServices.logout().subscribe(sampleBack =>{
+      this.user = null;
+      localStorage.removeItem('wyUserId');
+      this.alertMessage('success',"已退出");
+    },({error}) =>{
+      this.alertMessage('error',error.message|| '退出失败');
+    })
   }
 
   alertMessage(type: string, msg: string) {

@@ -101,3 +101,10 @@ export type SearchResult={
   songs?:Song[];
 
 }
+
+
+export type sampleBack={
+
+  code:number;
+  [key:string] :any;
+}
