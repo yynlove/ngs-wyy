@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { codeJson } from 'src/app/util/base64';
 
 export type LoginParams={
   phone:string,
@@ -35,8 +36,8 @@ export class WyLayerLoginComponent implements OnInit,OnChanges {
       let phone ='';
       let password ='';
       let remember ='';
-      const value = userLoginParams.currentValue;
-      if(value){
+      if(userLoginParams.currentValue){
+        const value = codeJson(userLoginParams.currentValue,'decode');
         phone = value.phone;
         password = value.password;
         remember = value.remember;

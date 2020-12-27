@@ -1,15 +1,19 @@
 import { Component, OnInit, ViewChild, ɵConsole } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 
 import { NzCarouselComponent } from 'ng-zorro-antd/carousel';
 import { map } from 'rxjs/internal/operators';
 import { Banner, HotTag, Singer, SongSheet } from 'src/app/services/data-types/common.type';
+import { User } from 'src/app/services/data-types/member.type';
+import { MemberServices } from 'src/app/services/member.service';
 import { SheetService } from 'src/app/services/sheet.service';
 import { AppStoreModule } from 'src/app/store';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
 
 import { PlayState } from 'src/app/store/reducers/player.reducer';
+import { getModal, getUserId } from 'src/app/store/selectors/Menber.selector';
 import { getPlayer } from 'src/app/store/selectors/player.selector';
 
 
@@ -27,7 +31,7 @@ export class HomeComponent implements OnInit {
   songSheetList:SongSheet[];
   singers:Singer[];
 
-
+  user:User;
 
   /**
    *  如果父组件的类需要读取子组件的属性值或调用子组件的方法，就不能使用本地变量方法。当父组件类需要这种访问时，可以把子组件作为 ViewChild，注入到父组件里面。
@@ -44,7 +48,9 @@ export class HomeComponent implements OnInit {
     private activatedRoute :ActivatedRoute,
     private router:Router,
     private sheetService:SheetService,
-    private batchActionService : BatchActionsService
+    private batchActionService : BatchActionsService,
+    private memberService:MemberServices,
+    private store$ :Store<AppStoreModule>
     ) {
     //从路由中获取数据 并赋值
     this.activatedRoute.data.pipe(map(res=>res.homeDatas)).subscribe(([banners,hotTags,songSheet,singers])=>{
@@ -52,8 +58,22 @@ export class HomeComponent implements OnInit {
       this.hotTags= hotTags;
       this.songSheetList= songSheet;
       this.singers= singers;
+    });
+
+    this.store$.pipe(select(getModal),select(getUserId)).subscribe(id =>{
+      console.log('id',id);
+      if(id){
+        this.getUserDetail(id);
+      }else{
+        this.user = null;
+      }
     })
    }
+  getUserDetail(id: string) {
+    this.memberService.getUserDetail(id).subscribe( user =>{
+      this.user = user;
+    });
+  }
 
    /**
     * 接收到子组件发射过来的值， 调用nzCarousel组件的pre() 或 next()

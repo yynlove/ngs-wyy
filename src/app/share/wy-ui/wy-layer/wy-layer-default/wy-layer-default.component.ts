@@ -10,7 +10,7 @@ import { Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter } from
         </div>
         <div class="methods">
           <button nz-button nzType="primary" nzSize="large" nzBlock="true" (click)="onChangeModalTypes.emit('loginByPhone')">手机号登录</button>
-          <button nz-button nzType="primary" nzSize="large" nzBlock="true" (click)="onChangeModalTypes.emit('register')">注册</button>
+          <button nz-button nzSize="large" nzBlock="true" (click)="onChangeModalTypes.emit('register')">注册</button>
         </div>
       </div>
     </div>

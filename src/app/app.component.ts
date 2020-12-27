@@ -5,11 +5,13 @@ import { SearchResult } from './services/data-types/common.type';
 import { User } from './services/data-types/member.type';
 import { MemberServices } from './services/member.service';
 import { SearchService } from './services/search.service';
+import { StorageService } from './services/storage.service';
 import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
 import { AppStoreModule } from './store';
-import { SetModalType } from './store/actions/member-action';
+import { SetModalType, SetUserId } from './store/actions/member-action';
 import { BatchActionsService } from './store/batch-actions.service';
 import { ModalTypes } from './store/reducers/member.reducer';
+import { codeJson } from './util/base64';
 import { isEmptyObject } from './util/tools';
 
 @Component({
@@ -41,14 +43,15 @@ export class AppComponent {
     private store$:Store<AppStoreModule>,
     private batchActionService : BatchActionsService,
     private memberServices:MemberServices,
-    private nzMessageService:NzMessageService
+    private nzMessageService:NzMessageService,
+    private storageService:StorageService
     ){
-      const userId = localStorage.getItem("wyUserId");
-      this.memberServices.getUserDetail(userId).subscribe(user=>{
-        this.user = user;
-      });
-      this.wyRememberLogin = JSON.parse(localStorage.getItem('wyRememberLogin'));
-
+      const userId =this.storageService.getStorage('wyUserId');
+      if(userId){
+        this.store$.dispatch(SetUserId({userId:userId}));
+        this.memberServices.getUserDetail(userId).subscribe(user=>{this.user = user;});
+      }
+      this.wyRememberLogin = JSON.parse(this.storageService.getStorage('wyRememberLogin'));
     }
 
   onSearch(value:string){
@@ -95,14 +98,14 @@ export class AppComponent {
       this.user = user;
       this.batchActionService.controlModal(false);
       this.alertMessage('success',"登录成功");
-
-      localStorage.setItem('wyUserId',user.profile.userId.toString());
+      this.storageService.setStorage({key:'wyUserId',value:user.profile.userId.toString()});
+      this.store$.dispatch(SetUserId({userId:user.profile.userId.toString()}));
       if(params.remember){
-        localStorage.setItem('wyRememberLogin',JSON.stringify(params));
+        this.storageService.setStorage({key:'wyRememberLogin',value:JSON.stringify(codeJson(params))})
       }else{
-        localStorage.removeItem('wyRememberLogin');
+        this.storageService.removeStorage('wyRememberLogin');
       }
-    },({error}) =>{
+    },error =>{
       this.alertMessage('error',error.message);
     });
   }
@@ -111,9 +114,10 @@ export class AppComponent {
   logout(){
     this.memberServices.logout().subscribe(sampleBack =>{
       this.user = null;
-      localStorage.removeItem('wyUserId');
+      this.storageService.removeStorage('wyUserId');
       this.alertMessage('success',"已退出");
-    },({error}) =>{
+      this.store$.dispatch(SetUserId({userId:''}));
+    },error =>{
       this.alertMessage('error',error.message|| '退出失败');
     })
   }

@@ -102,9 +102,12 @@ export type SearchResult={
 
 }
 
-
-export type sampleBack={
-
+//退出返回数据
+export interface SampleBack extends AnyJson{
   code:number;
+}
+
+//
+export type AnyJson = {
   [key:string] :any;
 }
