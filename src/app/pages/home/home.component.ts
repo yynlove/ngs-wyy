@@ -11,10 +11,7 @@ import { SheetService } from 'src/app/services/sheet.service';
 import { AppStoreModule } from 'src/app/store';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
-
-import { PlayState } from 'src/app/store/reducers/player.reducer';
 import { getModal, getUserId } from 'src/app/store/selectors/Menber.selector';
-import { getPlayer } from 'src/app/store/selectors/player.selector';
 
 
 
@@ -88,8 +85,7 @@ export class HomeComponent implements OnInit {
    }
 
    onPlaySheet(id:number){
-    this.sheetService.playSheet(id).subscribe(list =>{
-      console.log("onPlaySheet:",list)
+      this.sheetService.playSheet(id).subscribe(list =>{
         this.batchActionService.selectPlayList({list,index:0})
       });
    }

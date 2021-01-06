@@ -17,6 +17,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 @NgModule({
 
   imports: [
@@ -37,6 +38,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     NzMessageModule,
     NzAvatarModule,
     NzToolTipModule,
+    NzDividerModule,
     WyUiModule
   ],
   exports:[
@@ -57,6 +59,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     NzMessageModule,
     NzAvatarModule,
     NzToolTipModule,
+    NzDividerModule,
     WyUiModule
   ],
 

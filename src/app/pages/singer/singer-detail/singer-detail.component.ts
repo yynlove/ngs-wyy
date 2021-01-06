@@ -4,7 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/internal/operators';
-import { SingerDetail, Song } from 'src/app/services/data-types/common.type';
+import { Singer, SingerDetail, Song } from 'src/app/services/data-types/common.type';
 import { SongService } from 'src/app/services/song.service';
 import { AppStoreModule } from 'src/app/store';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
@@ -23,14 +23,16 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
   currentSong:Song;
   private destroy$ = new Subject<void>();
   currentIndex:number = -1;
+  simSingers:Singer[];
 
   constructor(private route:ActivatedRoute,
     private store$:Store<AppStoreModule>,
     private songServie :SongService,
     private batchActionsService:BatchActionsService,
     private nzMessageService:NzMessageService) {
-    this.route.data.pipe(map(res =>res.singerDetail)).subscribe(singerDetail =>{
+    this.route.data.pipe(map(res =>res.singerDetail)).subscribe(([singerDetail,simSingers]) =>{
       this.singerDetail = singerDetail;
+      this.simSingers = simSingers;
       this.listenCurrent();
     })
 

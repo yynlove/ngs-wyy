@@ -31,20 +31,19 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ### npm i
 ### npm start
 
-## 样式和组件
-### ng add ng-zorro-antd
+## 安装插件 
+### 样式和组件
+1. ng add ng-zorro-antd
+2. npm i minireset.css
 
-### npm i minireset.css
-
-###   @ngrx/store
->npm install @ngrx/store --save
->npm install @ngrx/store-devtools --save  需要安装Redux DevTools 插件
+###  状态管理  @ngrx/store
+1. npm install @ngrx/store --save
+2. npm install @ngrx/store-devtools --save  浏览器安装Redux DevTools 插件
 
 ### 滚动插件
->ng g c share/wy-ui/wy-player/wy-scroll -s -t -c=OnPush -v=None
->npm install @better-scroll/core --save
->npm install @better-scroll/scroll-bar --save
->npm install @better-scroll/mouse-wheel --save
->npm install --save @angular/material @angular/cdk @angular/animations
+1. npm install @better-scroll/core --save
+2. npm install @better-scroll/scroll-bar --save
+3. npm install @better-scroll/mouse-wheel --save
+4. npm install --save @angular/material @angular/cdk @angular/animations
 
 

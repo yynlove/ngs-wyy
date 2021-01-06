@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/internal/operators';
 import { Song, SongSheet } from 'src/app/services/data-types/common.type';
 import { SongService } from 'src/app/services/song.service';
@@ -52,7 +52,6 @@ export class SheetInfoComponent implements OnInit ,OnDestroy{
   listenCurrent() {
     this.store$.pipe(select(getPlayer),select(getCurrentSong),takeUntil(this.destroy$)).subscribe(song =>{
       this.currentSong = song;
-      console.log('this.currentSong',this.currentSong);
       if(song){
         this.currentIndex = findIndex(this.sheetInfo.tracks,song);
       }else{
