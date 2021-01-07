@@ -1,10 +1,7 @@
 import { Overlay, OverlayContainer, OverlayKeyboardDispatcher, OverlayRef, ScrollStrategy } from '@angular/cdk/overlay';
-import { Component, OnInit, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, AfterViewInit, ViewChild, Renderer2, Inject, OnChanges, SimpleChanges } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { AppStoreModule } from 'src/app/store';
+import { Component, OnInit, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, AfterViewInit, ViewChild, Renderer2, Inject, OnChanges, SimpleChanges,  Input } from '@angular/core';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
-import { getModal, getModalType, getModalVisible } from 'src/app/store/selectors/Menber.selector';
 import {ESCAPE} from '@angular/cdk/keycodes';
 import { DOCUMENT } from '@angular/common';
 import { WINDOW } from 'src/app/services/services.module';
@@ -28,8 +25,8 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
   //控制组件是否显示
   showModal:'show'|'hide'='hide';
 
-  currentModalType = ModalTypes.Default;
-  private visible = false;
+  @Input() currentModalType = ModalTypes.Default;
+  @Input() visible = false;
 
   //浮块
   private overleyRef:OverlayRef;
@@ -42,10 +39,10 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
   //监听游览器窗口变化
   private resizeHandler:()=>void;
 
+  
   constructor(
     @Inject(DOCUMENT) private doc:Document,
     @Inject(WINDOW) private win:Window,
-    private store$:Store<AppStoreModule>,
     private overlay:Overlay,
     private elementRef:ElementRef,
     private overlayKeyboardDispatcher:OverlayKeyboardDispatcher,
@@ -55,34 +52,10 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
     private batchActionsService:BatchActionsService,
     private rd :Renderer2
     ){
-    const appStore$ = this.store$.pipe(select(getModal));
-    appStore$.pipe(select(getModalVisible)).subscribe((visible)=>{
-      this.watchModalVisible(visible);
-    })
-    appStore$.pipe(select(getModalType)).subscribe((type)=>{
-      this.watchModalType(type);
-    })
     this.scrollStrategy =this.overlay.scrollStrategies.block();
 
   }
 
-
-
-  watchModalType(type: ModalTypes) {
-   if(this.currentModalType !== type){
-      this.currentModalType = type;
-      this.cdr.markForCheck();
-   }
-  }
-  //组件是否可见
-  watchModalVisible(visib: boolean) {
-
-
-    if(this.visible !== visib){
-      this.visible = visib;
-      this.handleVisiblechange(visib);
-    }
-  }
 
 
   handleVisiblechange(visible: boolean) {
@@ -131,7 +104,9 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    throw new Error('Method not implemented.');
+   if(changes['visible'] && !changes['visible'].firstChange){
+     this.handleVisiblechange(this.visible);
+   }
   }
 
   listenResizeToCenter() {

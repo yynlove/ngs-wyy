@@ -3,11 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Subject } from 'rxjs';
+import { SimpleOuterSubscriber } from 'rxjs/internal/innerSubscribe';
 import { map, takeUntil } from 'rxjs/internal/operators';
 import { Song, SongSheet } from 'src/app/services/data-types/common.type';
 import { SongService } from 'src/app/services/song.service';
 import { AppStoreModule } from 'src/app/store';
+import { SetModalType } from 'src/app/store/actions/member-action';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
+import { ModalTypes } from 'src/app/store/reducers/member.reducer';
 import { getCurrentSong, getPlayer } from 'src/app/store/selectors/player.selector';
 import { findIndex } from 'src/app/util/array';
 
@@ -136,5 +139,15 @@ export class SheetInfoComponent implements OnInit ,OnDestroy{
 
   ngOnInit(): void {
   }
+
+
+
+  onLikeSong(id:number){
+    console.log(id);
+    this.batchActionsService.likeSong(id.toString());
+
+  }
+
+
 
 }

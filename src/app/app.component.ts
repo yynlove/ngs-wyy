@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { SearchResult } from './services/data-types/common.type';
+import { SearchResult, SongSheet } from './services/data-types/common.type';
 import { User } from './services/data-types/member.type';
-import { MemberServices } from './services/member.service';
+import { likeSongParams, MemberServices } from './services/member.service';
 import { SearchService } from './services/search.service';
 import { StorageService } from './services/storage.service';
 import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
 import { AppStoreModule } from './store';
-import { SetModalType, SetUserId } from './store/actions/member-action';
+import { SetModaalVisible, SetModalType, SetUserId } from './store/actions/member-action';
 import { BatchActionsService } from './store/batch-actions.service';
 import { ModalTypes } from './store/reducers/member.reducer';
+import { getLikeId, getModal, getModalType, getModalVisible } from './store/selectors/Menber.selector';
 import { codeJson } from './util/base64';
 import { isEmptyObject } from './util/tools';
 
@@ -32,12 +33,21 @@ export class AppComponent {
     }
   ]
 
-
+  //home 页面搜索结果
   searchResult :SearchResult;
-
+  //当前用户
   user:User;
-
+  //是否记住登录
   wyRememberLogin:LoginParams;
+  //自己的歌单
+  mySheets :SongSheet[];
+  //要收藏的歌曲Id
+  likeId:string;
+
+  //当前模块
+  currentModalType:ModalTypes;
+  //是否可见
+  visible:boolean;
 
   constructor(private searchService:SearchService,
     private store$:Store<AppStoreModule>,
@@ -51,8 +61,46 @@ export class AppComponent {
         this.store$.dispatch(SetUserId({userId:userId}));
         this.memberServices.getUserDetail(userId).subscribe(user=>{this.user = user;});
       }
-      this.wyRememberLogin = JSON.parse(this.storageService.getStorage('wyRememberLogin'));
+      const wyRememberLogin =  this.storageService.getStorage('wyRememberLogin')
+      if(wyRememberLogin){
+        this.wyRememberLogin = JSON.parse(wyRememberLogin);
+      }
+      this.listenState();
     }
+
+
+  listenState() {
+    const memberState$ = this.store$.pipe(select(getModal));
+    memberState$.pipe(select(getLikeId)).subscribe(res => this.watchLikeId(res));
+    memberState$.pipe(select(getModalVisible)).subscribe((visible) => this.watchModalVisible(visible))
+    memberState$.pipe(select(getModalType)).subscribe((type) => this.watchModalType(type))
+  }
+
+
+  watchModalType(type: ModalTypes) {
+    if(this.currentModalType !== type){
+      if(type === ModalTypes.Like){
+        this.onLoadMySheets();
+      }
+       this.currentModalType = type;
+      
+    }
+   }
+   //组件是否可见
+   watchModalVisible(visib: boolean) {
+     if(this.visible !== visib){
+       this.visible = visib;
+     }
+   }
+ 
+
+  watchLikeId(likeId: string): void {
+    if(likeId){
+      this.likeId = likeId;
+    }
+  }
+
+  
 
   onSearch(value:string){
     if(value){
@@ -125,5 +173,27 @@ export class AppComponent {
   alertMessage(type: string, msg: string) {
     this.nzMessageService.create(type,msg);
   }
+
+
+  /**
+   * 点击收藏 加载歌单，并打开弹窗
+   */
+  onLoadMySheets(){
+    if(this.user){
+      this.memberServices.getUserSheets(this.user.profile.userId.toString()).subscribe(userSheet =>{
+        this.mySheets = userSheet.self;
+        this.store$.dispatch(SetModaalVisible({modalVisible:true}));
+      })
+    } else{
+      this.openModal(ModalTypes.Default);
+    }
+
+  }
+
+
+  onLikeSong(args:likeSongParams){
+    console.log("args",args);
+  }
+
 
 }

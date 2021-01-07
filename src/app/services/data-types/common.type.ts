@@ -67,7 +67,8 @@ export type SongSheet = {
   commentCount:number;
   tracks:Song[];
   userId:number;
-
+  
+  tracksCount:number;
 }
 
 

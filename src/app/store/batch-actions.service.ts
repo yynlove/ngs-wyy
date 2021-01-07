@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { AppStoreModule } from '.';
 import { Song } from '../services/data-types/common.type';
 import { findIndex, shuffle } from '../util/array';
-import { SetModaalVisible, SetModalType } from './actions/member-action';
+import { SetLikeId, SetModaalVisible, SetModalType } from './actions/member-action';
 import { SetCurrentAction, SetCurrentIndex, SetPlayList, SetSongList } from './actions/palyer-action';
 import { MemberState, ModalTypes } from './reducers/member.reducer';
 import { CurrentActions, PlayState } from './reducers/player.reducer';
@@ -132,6 +132,16 @@ export class BatchActionsService {
       this.store$.dispatch(SetModalType({modalType}));
     }
     this.store$.dispatch(SetModaalVisible({modalVisible}));
-
   }
+
+
+  /**
+   * 
+   * @param id 收藏歌曲
+   */
+  likeSong(id:string){
+    this.store$.dispatch(SetModalType({modalType:ModalTypes.Like}));
+    this.store$.dispatch(SetLikeId({likeId:id}));
+  }
+
 }

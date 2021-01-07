@@ -5,7 +5,6 @@ import { API_CONFIG, ServicesModule } from './services.module';
 import { map } from 'rxjs/internal/operators';
 import { RecordVal, Signin, User, UserRecord, UserSheet } from './data-types/member.type';
 import { LoginParams } from '../share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
-
 import queryString from 'query-string';
 import { SampleBack, SongSheet } from './data-types/common.type';
 
@@ -15,6 +14,10 @@ export enum RecordType {
   weekData
 }
 
+export type likeSongParams = {
+  pid:string,
+  tracks:string
+}
 
 @Injectable({
   providedIn: ServicesModule
@@ -74,7 +77,17 @@ export class MemberServices {
         self : list.filter(item => !item.subscribed),
         subscribed: list.filter(item => item.subscribed)
       }
-    }))
+    }));
   }
+
+
+  likeSong({pid,tracks}:likeSongParams) : Observable<number>{
+    const params = new HttpParams({ fromString:queryString.stringify({pid,tracks,op :'add'})});
+    return this.httpClient.get(this.url+"playlist/tracks",{params}).pipe(map((res:SampleBack)=>res.code));
+  }
+
+
+
+
 
 }

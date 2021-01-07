@@ -97,10 +97,7 @@ export class HomeComponent implements OnInit {
      this.router.navigate(['/sheetinfo',id]);
    }
 
-
-
    openModal(){
-
     this.batchActionService.controlModal(true,ModalTypes.Default);
    }
 
