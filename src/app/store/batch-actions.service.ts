@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { timer } from 'rxjs';
 import { AppStoreModule } from '.';
 import { Song } from '../services/data-types/common.type';
 import { findIndex, shuffle } from '../util/array';
@@ -132,6 +133,10 @@ export class BatchActionsService {
       this.store$.dispatch(SetModalType({modalType}));
     }
     this.store$.dispatch(SetModaalVisible({modalVisible}));
+    //关闭弹窗 将其设置为默认
+    if(!modalVisible){
+      timer(500).subscribe(() =>   this.store$.dispatch(SetModalType({modalType:ModalTypes.Default})));
+    }
   }
 
 

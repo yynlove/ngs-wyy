@@ -19,6 +19,13 @@ export type likeSongParams = {
   tracks:string
 }
 
+
+export type ShareParams={
+  id:string;
+  type:string;
+  msg:string;
+}
+
 @Injectable({
   providedIn: ServicesModule
 })
@@ -80,14 +87,32 @@ export class MemberServices {
     }));
   }
 
-
+  //收藏歌曲
   likeSong({pid,tracks}:likeSongParams) : Observable<number>{
+
     const params = new HttpParams({ fromString:queryString.stringify({pid,tracks,op :'add'})});
     return this.httpClient.get(this.url+"playlist/tracks",{params}).pipe(map((res:SampleBack)=>res.code));
   }
 
+  //创建歌单
+  createSheet(name:string):Observable<string>{
+    const params = new HttpParams({ fromString:queryString.stringify({ name })});
+    return this.httpClient.get(this.url+"playlist/create",{params}).pipe(map((res:SampleBack)=> res.id.toString()));
+
+  }
 
 
+  //收藏歌单
+  likeSheet(id:string,t=1):Observable<number>{
+    const params = new HttpParams({ fromString:queryString.stringify({id,t})});
+    return this.httpClient.get(this.url+"playlist/subscribe",{params}).pipe(map((res:SampleBack)=>res.code));
+  }
 
+
+  //分享资源
+  shareResource(shareParams :ShareParams):Observable<number>{
+    const params = new HttpParams({ fromString:queryString.stringify(shareParams)});
+    return this.httpClient.get(this.url+"share/resource",{params}).pipe(map((res:SampleBack) =>res.code));
+  }
 
 }

@@ -3,12 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Subject } from 'rxjs';
-import { SimpleOuterSubscriber } from 'rxjs/internal/innerSubscribe';
 import { map, takeUntil } from 'rxjs/internal/operators';
-import { Song, SongSheet } from 'src/app/services/data-types/common.type';
+import { Singer, Song, SongSheet } from 'src/app/services/data-types/common.type';
+import { MemberServices } from 'src/app/services/member.service';
 import { SongService } from 'src/app/services/song.service';
 import { AppStoreModule } from 'src/app/store';
-import { SetModalType } from 'src/app/store/actions/member-action';
+import { SetModalType, SetShareInfo } from 'src/app/store/actions/member-action';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
 import { getCurrentSong, getPlayer } from 'src/app/store/selectors/player.selector';
@@ -41,7 +41,8 @@ export class SheetInfoComponent implements OnInit ,OnDestroy{
     private store$:Store<AppStoreModule>,
     private songServie :SongService,
     private batchActionsService:BatchActionsService,
-    private nzMessageService:NzMessageService) {
+    private nzMessageService:NzMessageService,
+    private memberService : MemberServices) {
     this.route.data.pipe(map(res => res.sheetInfo)).subscribe(res=>{
       this.sheetInfo = res;
       if(res.description){
@@ -141,13 +142,49 @@ export class SheetInfoComponent implements OnInit ,OnDestroy{
   }
 
 
-
+  //收藏歌曲
   onLikeSong(id:number){
-    console.log(id);
     this.batchActionsService.likeSong(id.toString());
+  }
+
+  //收藏歌单
+  onLikeSheet(id:number){
+    this.memberService.likeSheet(id.toString()).subscribe(res =>{
+      this.alertMessage('success','收藏歌单成功');
+    },error =>{
+      this.alertMessage('error','收藏失败');
+    })
 
   }
 
+
+  //分享资源
+  shareResource(resource:Song | SongSheet ,type = 'song'){
+    let txt = '';
+    if(type === 'playlist'){
+      txt = this.makeTxt('歌单',resource.name,(<SongSheet>resource).creator.nickname);
+    }else{
+      txt = this.makeTxt('歌曲',resource.name,(<Song>resource).ar);
+    }
+    this.store$.dispatch(SetShareInfo({info:{id:resource.id.toString(),type,txt}}));
+  }
+
+  makeTxt(type: string, name: string, ar: string | Singer[]): string {
+   let makeByStr = '';
+   if(Array.isArray(ar)){
+     makeByStr = ar.map(item => item.name).join("/");
+   }else{
+      makeByStr = ar;
+   }
+   return `${type}:${name} --- ${makeByStr}`;
+  }
+
+
+
+
+  alertMessage(type: string, msg: string) {
+    this.nzMessageService.create(type,msg);
+  }
 
 
 }

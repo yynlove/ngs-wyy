@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { Observable } from 'rxjs';
+import { SimpleOuterSubscriber } from 'rxjs/internal/innerSubscribe';
 import { SearchResult, SongSheet } from './services/data-types/common.type';
 import { User } from './services/data-types/member.type';
-import { likeSongParams, MemberServices } from './services/member.service';
+import { likeSongParams, MemberServices, ShareParams } from './services/member.service';
 import { SearchService } from './services/search.service';
 import { StorageService } from './services/storage.service';
 import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
 import { AppStoreModule } from './store';
 import { SetModaalVisible, SetModalType, SetUserId } from './store/actions/member-action';
 import { BatchActionsService } from './store/batch-actions.service';
-import { ModalTypes } from './store/reducers/member.reducer';
-import { getLikeId, getModal, getModalType, getModalVisible } from './store/selectors/Menber.selector';
+import { ModalTypes, ShareInfo } from './store/reducers/member.reducer';
+import { getLikeId, getModal, getModalType, getModalVisible, getShareInfo } from './store/selectors/Menber.selector';
 import { codeJson } from './util/base64';
 import { isEmptyObject } from './util/tools';
 
@@ -48,6 +50,8 @@ export class AppComponent {
   currentModalType:ModalTypes;
   //是否可见
   visible:boolean;
+  //分享资源
+  shareInfo:ShareInfo;
 
   constructor(private searchService:SearchService,
     private store$:Store<AppStoreModule>,
@@ -72,8 +76,9 @@ export class AppComponent {
   listenState() {
     const memberState$ = this.store$.pipe(select(getModal));
     memberState$.pipe(select(getLikeId)).subscribe(res => this.watchLikeId(res));
-    memberState$.pipe(select(getModalVisible)).subscribe((visible) => this.watchModalVisible(visible))
-    memberState$.pipe(select(getModalType)).subscribe((type) => this.watchModalType(type))
+    memberState$.pipe(select(getModalVisible)).subscribe((visible) => this.watchModalVisible(visible));
+    memberState$.pipe(select(getModalType)).subscribe((type) => this.watchModalType(type));
+    memberState$.pipe(select(getShareInfo)).subscribe((info) => this.watchShareInfo(info))
   }
 
 
@@ -93,12 +98,22 @@ export class AppComponent {
      }
    }
  
-
+  //收藏id
   watchLikeId(likeId: string): void {
     if(likeId){
       this.likeId = likeId;
     }
   }
+
+  //查看分享资源
+  watchShareInfo(info:ShareInfo):void{ 
+    //必须要判断
+    if(info){
+      this.shareInfo = info;
+      this.openModal(ModalTypes.Share);
+    }
+  }
+
 
   
 
@@ -144,7 +159,7 @@ export class AppComponent {
     console.log('params',params);
     this.memberServices.doLogin(params).subscribe(user=>{
       this.user = user;
-      this.batchActionService.controlModal(false);
+      this.closeModal();
       this.alertMessage('success',"登录成功");
       this.storageService.setStorage({key:'wyUserId',value:user.profile.userId.toString()});
       this.store$.dispatch(SetUserId({userId:user.profile.userId.toString()}));
@@ -191,8 +206,52 @@ export class AppComponent {
   }
 
 
-  onLikeSong(args:likeSongParams){
-    console.log("args",args);
+  /**
+   * 收藏歌曲
+   * @param args  歌单id 和歌曲id 
+   */
+  onLikeSong(args:likeSongParams){  
+    this.memberServices.likeSong(args).subscribe(res=>{
+      this.closeModal();
+      this.alertMessage('success',"收藏成功");
+    },error =>{
+      this.alertMessage('error',error.msg || "收藏失败");
+    })
+  }
+
+
+  /**
+   * 创建一个歌单 并收藏歌曲
+   * @param name 歌单名字
+   */
+  onCreateSheet(name:string){
+    this.memberServices.createSheet(name).subscribe(pid => {
+      this.onLikeSong({pid:pid,tracks:this.likeId});
+    },error =>{
+      this.alertMessage('error', "新建失败");
+    })
+  }
+
+  /**
+   * 分享页面关闭弹窗
+   */
+  closeModal() {
+    this.batchActionService.controlModal(false);
+  }
+
+
+  /**
+   * 分享
+   * @param shareParams 参数
+   */
+  onShare(shareParams:ShareParams){
+    console.log(shareParams);
+    this.memberServices.shareResource(shareParams).subscribe(res =>{
+      this.closeModal();
+      this.alertMessage('success',"分享成功");
+    },error =>{
+      this.alertMessage('error', "分享失败");
+    });
   }
 
 
