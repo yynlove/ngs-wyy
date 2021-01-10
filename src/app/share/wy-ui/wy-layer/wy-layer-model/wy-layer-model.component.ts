@@ -22,6 +22,9 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 })
 export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
 
+  //标题
+  modelTitle={ "loginByPhone":'手机登录', "register":'注册', "like":'收藏', "share":'分享',"defult":''}
+
   //控制组件是否显示
   showModal:'show'|'hide'='hide';
 
@@ -39,7 +42,7 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
   //监听游览器窗口变化
   private resizeHandler:()=>void;
 
-  
+
   constructor(
     @Inject(DOCUMENT) private doc:Document,
     @Inject(WINDOW) private win:Window,

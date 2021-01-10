@@ -30,6 +30,10 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
   //清空歌单
   @Output() onClearSong = new EventEmitter<void>();
   @Output() onToInfo = new EventEmitter<[string,number]>();
+  //收藏歌曲
+  @Output() onLikeSong = new EventEmitter<string>();
+  //分享歌曲
+  @Output() onShareSong = new EventEmitter<Song>();
 
   //使用viewchildren是因为 有一个歌词也需要滚动
   @ViewChildren(WyScrollComponent) private wyScroll : QueryList<WyScrollComponent>;
@@ -164,7 +168,6 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       }
 
       if(this.lyricRefs.length){
-        console.log('接受多播的值lineNum',lineNum);
         this.currentLineNum = lineNum;
         //播放行数大于第三行 才开始滚动
         if(lineNum > this.startLine){
@@ -188,16 +191,12 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
       obj.offsetHeight 指 obj 控件自身的高度，整型，单位像素
    */
   private scrollToCurrent(speed = 300) {
-   console.log("this.wyScroll.first.el",this.wyScroll.first.el.nativeElement);
    const songListRefs = this.wyScroll.first.el.nativeElement.querySelectorAll('ul li');
 
    if(songListRefs.length){
     const currentLi = <HTMLElement>songListRefs[this.currentIndex || 0];
     const offsetTop = currentLi.offsetTop;
     const liOffsetHeight = currentLi.offsetHeight;
-     console.log("scrollY",this.scrollY);
-     console.log("offsetTop",offsetTop);
-     console.log("liOffsetHeight",liOffsetHeight);
     if((offsetTop-Math.abs(this.scrollY)) > liOffsetHeight * 4 || offsetTop <Math.abs(this.scrollY)){
 
       this.wyScroll.first.scrollToElement(currentLi,speed,false,false);
@@ -221,4 +220,18 @@ export class WyPlayerPanelComponent implements OnInit,OnChanges {
     evt.stopPropagation();
     this.onToInfo.emit(path);
   }
+
+
+  //收藏歌曲
+  likeSong(evt:MouseEvent,id:string){
+    evt.stopPropagation();
+    this.onLikeSong.emit(id);
+  }
+
+  shareSong(evt:MouseEvent,song:Song){
+
+    evt.stopPropagation();
+    this.onShareSong.emit(song);
+  }
+
 }

@@ -115,4 +115,31 @@ export class MemberServices {
     return this.httpClient.get(this.url+"share/resource",{params}).pipe(map((res:SampleBack) =>res.code));
   }
 
+
+  //收藏歌手
+  likeSinger(id:number,t=1):Observable<number>{
+    const params = new HttpParams({ fromString:queryString.stringify({id,t})});
+    return this.httpClient.get(this.url+"artist/sub",{params}).pipe(map((res:SampleBack) =>res.code));
+  }
+
+
+  //发送验证码
+  sendCode(phone:number):Observable<number>{
+    const params = new HttpParams({ fromString:queryString.stringify({phone})});
+    return this.httpClient.get(this.url+"captcha/sent",{params}).pipe(map((res:SampleBack) =>res.code));
+  }
+
+  //验证验证码
+  checkCode(phone:number,captcha:number):Observable<number>{
+    const params = new HttpParams({ fromString:queryString.stringify({phone,captcha})});
+    return this.httpClient.get(this.url+"captcha/verify",{params}).pipe(map((res:SampleBack) =>res.code));
+  }
+  //检测手机是否已经注册
+  checkExist(phone:number):Observable<number>{
+    const params = new HttpParams({ fromString:queryString.stringify({phone})});
+    return this.httpClient.get(this.url+" cellphone/existence/check",{params}).pipe(map((res:SampleBack) =>res.code));
+
+  }
+
+
 }

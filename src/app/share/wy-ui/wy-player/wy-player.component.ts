@@ -3,10 +3,12 @@ import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription, timer } from 'rxjs';
-import { Song } from 'src/app/services/data-types/common.type';
+import { Singer, Song } from 'src/app/services/data-types/common.type';
 import { AppStoreModule } from 'src/app/store';
+import { SetShareInfo } from 'src/app/store/actions/member-action';
 import { SetCurrentAction, SetCurrentIndex, SetPlayList, SetPlayMode } from 'src/app/store/actions/palyer-action';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { CurrentActions } from 'src/app/store/reducers/player.reducer';
@@ -104,13 +106,15 @@ export class WyPlayerComponent implements OnInit {
 
 
   private audioEl : HTMLAudioElement;
+  memberService: any;
 
   constructor(
     private store$ : Store<AppStoreModule>,
     @Inject(DOCUMENT) private doc :Document,
     private batchArtionsService : BatchActionsService,
     private nzModalService:NzModalService,
-    private router:Router
+    private router:Router,
+    private nzMessageService:NzMessageService
   ) {
     const appStore$ = this.store$.pipe(select(getPlayer));
     //监听状态管理的变化
@@ -396,7 +400,6 @@ export class WyPlayerComponent implements OnInit {
    * @param pre   滑块的位置
    */
   onPercentChange(pre){
-    console.log("pre",pre);
     if(this.currentSong){
       const currentTime = this.duration * (pre / 100);
       this.audioEl.currentTime = currentTime;
@@ -479,4 +482,27 @@ export class WyPlayerComponent implements OnInit {
     }
   }
 
+
+  //收藏歌曲
+  onLikeSong(id:string){
+    console.log('id',id);
+
+    this.batchArtionsService.likeSong(id);
+  }
+  //分享资源
+  onShareSong(resource:Song,type = 'song'){
+    console.log('resource',resource);
+
+    const txt = this.makeTxt('歌曲',resource.name,resource.ar);;
+    this.store$.dispatch(SetShareInfo({info:{id:resource.id.toString(),type,txt}}));
+  }
+
+  makeTxt(type: string, name: string, ar:Singer[]): string {
+   let makeByStr =ar.map(item => item.name).join("/");
+   return `${type}:${name} --- ${makeByStr}`;
+  }
+
+  alertMessage(type: string, msg: string) {
+    this.nzMessageService.create(type,msg);
+  }
 }

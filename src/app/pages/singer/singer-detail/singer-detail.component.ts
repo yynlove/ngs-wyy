@@ -5,6 +5,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/internal/operators';
 import { Singer, SingerDetail, Song } from 'src/app/services/data-types/common.type';
+import { MemberServices } from 'src/app/services/member.service';
 import { SongService } from 'src/app/services/song.service';
 import { AppStoreModule } from 'src/app/store';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
@@ -25,11 +26,14 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
   currentIndex:number = -1;
   simSingers:Singer[];
 
+  hasLiked:boolean = false;
+
   constructor(private route:ActivatedRoute,
     private store$:Store<AppStoreModule>,
     private songServie :SongService,
     private batchActionsService:BatchActionsService,
-    private nzMessageService:NzMessageService) {
+    private nzMessageService:NzMessageService,
+    private memberService :MemberServices) {
     this.route.data.pipe(map(res =>res.singerDetail)).subscribe(([singerDetail,simSingers]) =>{
       this.singerDetail = singerDetail;
       this.simSingers = simSingers;
@@ -88,6 +92,25 @@ export class SingerDetailComponent implements OnInit,OnDestroy {
         }
       })
     }
+
+  }
+
+
+  /**
+   * 收藏歌手
+   */
+  onLikeSinger(id:number){
+    let typeInfo ={ type:1,msg:'收藏'}
+    if(this.hasLiked){
+      typeInfo ={ type:2,msg:'取消收藏'}
+    }
+
+    this.memberService.likeSinger(id,typeInfo.type).subscribe(res=>{
+      this.hasLiked = !this.hasLiked;
+      this.nzMessageService.create('success',typeInfo.msg+'成功');
+    },err=>{
+      this.nzMessageService.create('error',err.mgs || typeInfo.msg+'失败');
+    })
 
   }
 

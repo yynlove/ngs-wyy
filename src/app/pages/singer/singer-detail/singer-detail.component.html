@@ -14,7 +14,7 @@
 
           <img [src]="singerDetail.artist.picUrl" [alt]="singerDetail.artist.name" class="full-height">
         </div>
-        <button class="btn btn-like"></button>
+        <button class="btn btn-like" [class.btn-liked]="hasLiked" (click)="onLikeSinger(singerDetail.artist.id)"></button>
       </div>
 
       <div class="top-50">
@@ -25,7 +25,7 @@
             </button>
             <button class="add" nz-button nzType="primary" (click)="onAddSongs(singerDetail.hotSongs)">+</button>
           </nz-button-group>
-          <button class="btn like" nz-button><span>收藏</span>{{ singerDetail.hotSongs.length }}</button>
+          <button class="btn like" nz-button ><span>收藏</span>{{ singerDetail.hotSongs.length }}</button>
         </div>
 
        <!-- 列表 -->

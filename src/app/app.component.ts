@@ -88,7 +88,7 @@ export class AppComponent {
         this.onLoadMySheets();
       }
        this.currentModalType = type;
-      
+
     }
    }
    //组件是否可见
@@ -97,7 +97,7 @@ export class AppComponent {
        this.visible = visib;
      }
    }
- 
+
   //收藏id
   watchLikeId(likeId: string): void {
     if(likeId){
@@ -106,16 +106,20 @@ export class AppComponent {
   }
 
   //查看分享资源
-  watchShareInfo(info:ShareInfo):void{ 
+  watchShareInfo(info:ShareInfo):void{
     //必须要判断
     if(info){
-      this.shareInfo = info;
-      this.openModal(ModalTypes.Share);
+      if(this.user){
+        this.shareInfo = info;
+        this.openModal(ModalTypes.Share);
+      }else{
+        this.openModal(ModalTypes.Default);
+      }
     }
   }
 
 
-  
+
 
   onSearch(value:string){
     if(value){
@@ -208,9 +212,9 @@ export class AppComponent {
 
   /**
    * 收藏歌曲
-   * @param args  歌单id 和歌曲id 
+   * @param args  歌单id 和歌曲id
    */
-  onLikeSong(args:likeSongParams){  
+  onLikeSong(args:likeSongParams){
     this.memberServices.likeSong(args).subscribe(res=>{
       this.closeModal();
       this.alertMessage('success',"收藏成功");
