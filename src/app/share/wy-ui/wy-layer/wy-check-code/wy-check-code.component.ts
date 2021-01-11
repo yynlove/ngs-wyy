@@ -17,6 +17,10 @@ export class WyCheckCodeComponent implements OnInit {
     arr.splice(3,4,'****');
     this.phoneHideStr = arr.join('');
   }
+  get phone() {
+    return this.phoneHideStr;
+  }
+
 
   constructor() { }
 
