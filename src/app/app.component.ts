@@ -165,7 +165,6 @@ export class AppComponent {
     this.showSpin = true;
     this.memberServices.doLogin(params).subscribe(user=>{
       console.log("user",user);
-      
       this.user = user;
       this.closeModal();
       this.alertMessage('success',"登录成功");

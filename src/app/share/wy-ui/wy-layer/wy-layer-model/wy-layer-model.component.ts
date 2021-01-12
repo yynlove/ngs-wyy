@@ -79,7 +79,6 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
       this.scrollStrategy.disable();
       this.overlayKeyboardDispatcher.remove(this.overleyRef);
       this.resizeHandler();
-
       this.changePointEvents('none');
     }
     this.cdr.markForCheck();

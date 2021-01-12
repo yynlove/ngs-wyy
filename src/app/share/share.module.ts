@@ -19,6 +19,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzListModule } from 'ng-zorro-antd/list';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 @NgModule({
 
   imports: [
@@ -41,6 +42,7 @@ import { NzListModule } from 'ng-zorro-antd/list';
     NzToolTipModule,
     NzDividerModule,
     NzListModule,
+    NzSpinModule,
     WyUiModule
   ],
   exports:[
@@ -63,6 +65,7 @@ import { NzListModule } from 'ng-zorro-antd/list';
     NzToolTipModule,
     NzDividerModule,
     NzListModule,
+    NzSpinModule,
     WyUiModule
   ],
 
