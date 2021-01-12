@@ -5,7 +5,7 @@
          <div class="left">
            <h1>Music</h1>
            <ul nz-menu nzMode="horizontal" nzTheme="dark">
-            <li nz-menu-item *ngFor="let item of menu" [routerLink]="item.path">{{ item.label}}</li>
+            <li nz-menu-item *ngFor="let item of menu" [nzSelected]="routeTitle === item.label" [routerLink]="item.path">{{ item.label}}</li>
            </ul>
          </div>
          <div class="right">
@@ -72,3 +72,13 @@
   <app-wy-layer-register name="register" (onChangeModalTypes)="onChangeModalTypes($event)" (onRegister)="onRegister($event)"></app-wy-layer-register>
   <app-wy-layer-default (onChangeModalTypes)="onChangeModalTypes($event)"></app-wy-layer-default>
 </app-wy-layer-model>
+
+<nz-back-top [nzTemplate]="tpl">
+  <ng-template #tpl>
+    <div class="ant-back-top-inner">
+      <button nz-button nzType="primary" nzSize="large">
+        <i nz-icon nzType="to-top" nzTheme="outline"></i>
+      </button>
+    </div>
+  </ng-template>
+</nz-back-top>

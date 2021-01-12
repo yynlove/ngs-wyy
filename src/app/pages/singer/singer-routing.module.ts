@@ -4,7 +4,7 @@ import { SingerDetailComponent } from './singer-detail/singer-detail.component';
 import { SingerResolverService } from './singer-detail/singer-resolver.service';
 
 const routes: Routes = [{
-  path:'singer/:id',component:SingerDetailComponent,data:{ title :'歌手详情'},resolve:{singerDetail:SingerResolverService}
+  path:'',component:SingerDetailComponent,data:{ title :'歌手详情'},resolve:{singerDetail:SingerResolverService}
 }];
 
 @NgModule({

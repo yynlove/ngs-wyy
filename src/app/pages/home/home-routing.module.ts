@@ -7,7 +7,7 @@ const routes: Routes = [
   /**
    * Resolve: 预先获取组件数据
    */
-  {path:'home',component:HomeComponent,data:{title:'发现'},resolve:{homeDatas:HomeResolverService}}
+  {path:'',component:HomeComponent,data:{title:'发现'},resolve:{homeDatas:HomeResolverService}}
 ];
 
 @NgModule({

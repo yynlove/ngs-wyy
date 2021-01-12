@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SheetListComponent } from './sheet-list.component';
 
 const routes: Routes = [{
-  path:'sheet',component:SheetListComponent,data:{title:'歌单列表'}
+  path:'',component:SheetListComponent,data:{title:'歌单列表'}
 }];
 
 @NgModule({

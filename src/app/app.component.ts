@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, ActivationStart, Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observable } from 'rxjs';
-import { SimpleOuterSubscriber } from 'rxjs/internal/innerSubscribe';
+import { filter, map, mergeMap } from 'rxjs/internal/operators';
 import { SearchResult, SongSheet } from './services/data-types/common.type';
 import { User } from './services/data-types/member.type';
 import { likeSongParams, MemberServices, ShareParams } from './services/member.service';
@@ -55,12 +57,18 @@ export class AppComponent {
   //分享资源
   shareInfo:ShareInfo;
 
+  //路由结束
+  navEnd:Observable<Event>;
+  routeTitle = '';
   constructor(private searchService:SearchService,
     private store$:Store<AppStoreModule>,
     private batchActionService : BatchActionsService,
     private memberServices:MemberServices,
     private nzMessageService:NzMessageService,
-    private storageService:StorageService
+    private storageService:StorageService,
+    private router:Router,
+    private activatedRoute:ActivatedRoute,
+    private titleService:Title
     ){
       const userId =this.storageService.getStorage('wyUserId');
       if(userId){
@@ -72,7 +80,31 @@ export class AppComponent {
         this.wyRememberLogin = JSON.parse(wyRememberLogin);
       }
       this.listenState();
+
+      //改变标题
+      this.navEnd =  this.router.events.pipe(filter(evt=>evt instanceof NavigationEnd));
+      //设置标题
+      this.setTitle();
+
     }
+
+
+  setTitle() {
+    this.navEnd.pipe(
+      map(() =>this.activatedRoute),
+      map((route:ActivatedRoute) =>{
+        while(route.firstChild){
+          route = route.firstChild;
+        }
+        return route;
+      }),
+      mergeMap(route =>route.data)
+    ).subscribe(data =>{
+      console.log('data',data);
+      this.routeTitle = data['title'];
+      this.titleService.setTitle(this.routeTitle);
+    })
+  }
 
 
   listenState() {
@@ -178,7 +210,7 @@ export class AppComponent {
       this.showSpin = false;
     },error =>{
       console.log("error",error);
-      
+
       this.showSpin = false;
       this.alertMessage('error',error.message);
     });
