@@ -137,7 +137,7 @@ export class MemberServices {
   //检测手机是否已经注册
   checkExist(phone:number):Observable<number>{
     const params = new HttpParams({ fromString:queryString.stringify({phone})});
-    return this.httpClient.get(this.url+" cellphone/existence/check",{params}).pipe(map((res:SampleBack) =>res.code));
+    return this.httpClient.get(this.url+"cellphone/existence/check",{params}).pipe(map((res:SampleBack) =>res.code));
 
   }
 

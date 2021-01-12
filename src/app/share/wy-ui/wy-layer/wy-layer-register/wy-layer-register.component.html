@@ -29,7 +29,11 @@
     <div class="modal-wrap">
       <app-wy-check-code
         [phone]="formModel.get('phone').value"
-        [timing]="timing">
+        [timing]="timing"
+        [checkPass]="checkPass"
+        (onCheckCode)="onCheckCode($event)"
+        (onReatSendCode)="setCode()"
+        (onCheckExist)="onCheckExist()">
         
       </app-wy-check-code>
     </div>

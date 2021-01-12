@@ -65,10 +65,10 @@
 
 <app-wy-player></app-wy-player>
 
-<app-wy-layer-model [currentModalType]="currentModalType" [visible]="visible">
+<app-wy-layer-model [currentModalType]="currentModalType" [showSpin]="showSpin" [visible]="visible">
   <app-wy-layer-login name="login" [wyRememberLogin]="wyRememberLogin"  (onChangeModalTypes)="onChangeModalTypes($event)" (onLogin)="onLogin($event)"></app-wy-layer-login>
   <app-wy-layer-like name="like" [visible]="visible" [mySheets]="mySheets" [likeId]="likeId" (onLikeSong)="onLikeSong($event)" (onCreateSheet)="onCreateSheet($event)"></app-wy-layer-like>
   <app-wy-layer-share name="share" [shareInfo]="shareInfo" (onCancel)="closeModal()" (onShare)="onShare($event)"></app-wy-layer-share>
-  <app-wy-layer-register name="register" (onChangeModalTypes)="onChangeModalTypes($event)"></app-wy-layer-register>
+  <app-wy-layer-register name="register" (onChangeModalTypes)="onChangeModalTypes($event)" (onRegister)="onRegister($event)"></app-wy-layer-register>
   <app-wy-layer-default (onChangeModalTypes)="onChangeModalTypes($event)"></app-wy-layer-default>
 </app-wy-layer-model>

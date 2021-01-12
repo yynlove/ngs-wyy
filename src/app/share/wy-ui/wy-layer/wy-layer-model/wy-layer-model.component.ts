@@ -24,6 +24,8 @@ export class WyLayerModelComponent implements OnInit,AfterViewInit,OnChanges{
 
   //标题
   modelTitle={ "loginByPhone":'手机登录', "register":'注册', "like":'收藏', "share":'分享',"defult":''}
+  //加载中...显示框
+  @Input() showSpin:boolean;
 
   //控制组件是否显示
   showModal:'show'|'hide'='hide';

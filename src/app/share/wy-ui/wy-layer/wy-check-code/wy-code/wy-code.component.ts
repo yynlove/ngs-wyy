@@ -116,8 +116,6 @@ export class WyCodeComponent implements OnInit,ControlValueAccessor,AfterViewIni
   }
 
 
-
-
   setValue(code: string) {
     this.code = code;
     this.onValueChange(code);

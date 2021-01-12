@@ -35,6 +35,8 @@ export class AppComponent {
     }
   ]
 
+  showSpin:boolean;
+
   //home 页面搜索结果
   searchResult :SearchResult;
   //当前用户
@@ -160,8 +162,10 @@ export class AppComponent {
   }
 
   onLogin(params:LoginParams){
-    console.log('params',params);
+    this.showSpin = true;
     this.memberServices.doLogin(params).subscribe(user=>{
+      console.log("user",user);
+      
       this.user = user;
       this.closeModal();
       this.alertMessage('success',"登录成功");
@@ -172,7 +176,11 @@ export class AppComponent {
       }else{
         this.storageService.removeStorage('wyRememberLogin');
       }
+      this.showSpin = false;
     },error =>{
+      console.log("error",error);
+      
+      this.showSpin = false;
       this.alertMessage('error',error.message);
     });
   }
@@ -258,5 +266,9 @@ export class AppComponent {
     });
   }
 
+
+  onRegister(phone:number){
+    this.alertMessage('success', phone + '注册成功');
+  }
 
 }
