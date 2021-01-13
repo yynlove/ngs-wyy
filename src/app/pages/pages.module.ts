@@ -20,7 +20,7 @@ import { SongInfoModule } from './song-info/song-info.module';
     MemberModule,
     SingerModule
   ],
-  exports:[
+  exports: [
     HomeModule,
     SheetListModule,
     SheetInfoModule,

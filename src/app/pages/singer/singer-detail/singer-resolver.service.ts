@@ -7,13 +7,13 @@ import { Singer, SingerDetail,  } from 'src/app/services/data-types/common.type'
 import { SingerService } from 'src/app/services/singer.service';
 
 
-type SingerModal = [SingerDetail,Singer[]];
+type SingerModal = [SingerDetail, Singer[]];
 
 
 @Injectable()
 export class SingerResolverService implements Resolve<SingerModal>{
 
-  constructor(private singerService:SingerService) { }
+  constructor(private singerService: SingerService) { }
 
   resolve(route: ActivatedRouteSnapshot): Observable<SingerModal> {
     const id =  route.paramMap.get('id');

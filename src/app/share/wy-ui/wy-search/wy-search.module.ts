@@ -9,13 +9,13 @@ import {OverlayModule} from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [WySearchComponent, WySearchPanelComponent],
-  entryComponents:[WySearchComponent], //动态组件
+  entryComponents: [WySearchComponent], // 动态组件
   imports: [
     CommonModule,
     NzIconModule,
     NzInputModule,
     OverlayModule
   ],
-  exports:[WySearchComponent]
+  exports: [WySearchComponent]
 })
 export class WySearchModule { }

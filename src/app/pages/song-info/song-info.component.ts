@@ -16,36 +16,36 @@ import { getCurrentSong, getPlayer } from 'src/app/store/selectors/player.select
   templateUrl: './song-info.component.html',
   styleUrls: ['./song-info.component.less']
 })
-export class SongInfoComponent implements OnInit,OnDestroy {
+export class SongInfoComponent implements OnInit, OnDestroy {
 
-  song:Song;
-  lyric:BaseLyricLine[];
+  song: Song;
+  lyric: BaseLyricLine[];
 
   controlLyric = {
-    isExpend:false,
-    label:'展开',
-    isconCls:'down'
-  }
-  currentSong : Song;
+    isExpend: false,
+    label: '展开',
+    isconCls: 'down'
+  };
+  currentSong: Song;
   private destroy$ = new Subject<void>();
 
-  constructor(private route:ActivatedRoute,
-    private store$:Store<AppStoreModule>,
-    private songServie :SongService,
-    private batchActionsService:BatchActionsService,
-    private nzMessageService:NzMessageService) {
-    this.route.data.pipe(map(res => res.songInfo)).subscribe(([song,lyric]) =>{
+  constructor(private route: ActivatedRoute,
+              private store$: Store<AppStoreModule>,
+              private songServie: SongService,
+              private batchActionsService: BatchActionsService,
+              private nzMessageService: NzMessageService) {
+    this.route.data.pipe(map(res => res.songInfo)).subscribe(([song, lyric]) => {
       this.song = song;
       this.lyric = new WyLycir(lyric).lines;
       this.listenCurrent();
-    })
+    });
   }
 
 
   ngOnInit(): void {
   }
 
-   //发射值并结束
+   // 发射值并结束
    ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -56,7 +56,7 @@ export class SongInfoComponent implements OnInit,OnDestroy {
   toggleLyric(){
     this.controlLyric.isExpend = !this.controlLyric.isExpend;
 
-    if(this.controlLyric.isExpend){
+    if (this.controlLyric.isExpend){
       this.controlLyric.label = '收起';
       this.controlLyric.isconCls = 'up';
     }else{
@@ -66,26 +66,26 @@ export class SongInfoComponent implements OnInit,OnDestroy {
   }
 
 
-   //监听当前播放歌曲
+   // 监听当前播放歌曲
    listenCurrent() {
-    this.store$.pipe(select(getPlayer),select(getCurrentSong),takeUntil(this.destroy$)).subscribe(song =>{
+    this.store$.pipe(select(getPlayer), select(getCurrentSong), takeUntil(this.destroy$)).subscribe(song => {
       this.currentSong = song;
-      console.log('this.currentSong',this.currentSong);
+      console.log('this.currentSong', this.currentSong);
 
     });
   }
 
-  onAddSong(song:Song,isPlay = false){
+  onAddSong(song: Song, isPlay = false){
 
-    if(!this.currentSong || this.currentSong.id !== song.id){
-      //获取歌曲的url 并添加到播放歌曲列表
-      this.songServie.getSongList(song).subscribe(list =>{
-        if(list.length){
-          this.batchActionsService.insertSong(list[0],isPlay);
+    if (!this.currentSong || this.currentSong.id !== song.id){
+      // 获取歌曲的url 并添加到播放歌曲列表
+      this.songServie.getSongList(song).subscribe(list => {
+        if (list.length){
+          this.batchActionsService.insertSong(list[0], isPlay);
         }else{
           this.nzMessageService.warning('无url');
         }
-      })
+      });
     }
 
   }

@@ -21,6 +21,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzBackTopModule } from 'ng-zorro-antd/back-top';
+
+
 @NgModule({
 
   imports: [
@@ -47,7 +49,7 @@ import { NzBackTopModule } from 'ng-zorro-antd/back-top';
     NzBackTopModule,
     WyUiModule
   ],
-  exports:[
+  exports: [
     CommonModule,
     FormsModule,
     NzLayoutModule,
@@ -69,8 +71,11 @@ import { NzBackTopModule } from 'ng-zorro-antd/back-top';
     NzListModule,
     NzSpinModule,
     NzBackTopModule,
-    WyUiModule
+    WyUiModule,
+
+
   ],
+  declarations: [],
 
 })
 export class ShareModule { }

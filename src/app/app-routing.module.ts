@@ -32,12 +32,13 @@ const routes: Routes = [
    * 此外还有一个可能值为：'prefix'
    *
    */
-  {path:'',redirectTo:'home',pathMatch:'full'},
+  {path: '', redirectTo: 'home', pathMatch: 'full'},
   { path: '**', redirectTo: '/home' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{
+  imports: [RouterModule.forRoot(routes, {
+    //切换页面 滚动条重新置顶
     scrollPositionRestoration: 'enabled'
   })],
   exports: [RouterModule]

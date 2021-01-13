@@ -11,14 +11,14 @@ import { ClickoutsideDirective } from '../../directives/clickoutside.directive';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 @NgModule({
-  declarations: [WyPlayerComponent,FormatTimePipe, WyPlayerPanelComponent, WyScrollComponent,ClickoutsideDirective],
+  declarations: [WyPlayerComponent, FormatTimePipe, WyPlayerPanelComponent, WyScrollComponent, ClickoutsideDirective],
   imports: [
     CommonModule,
     WySliderModule,
     FormsModule,
     NzToolTipModule
   ],
-  exports:[
+  exports: [
     WyPlayerComponent,
     FormatTimePipe,
     ClickoutsideDirective

@@ -19,25 +19,25 @@ BScroll.use(MouseWheel);
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
+export class WyScrollComponent implements OnInit, AfterViewInit, OnChanges {
 
-  @Input() data : any[];
-  //滚动面板延迟刷新的时长
-  @Input() refreshDelay:number = 50;
+  @Input() data: any[];
+  // 滚动面板延迟刷新的时长
+  @Input() refreshDelay = 50;
 
   @Output() private onScrollEnd = new EventEmitter<number>();
 
-  private bs :BScroll;
+  private bs: BScroll;
 
-  @ViewChild('warp',{static:true}) private warpRef:ElementRef;
+  @ViewChild('warp', {static: true}) private warpRef: ElementRef;
 
 
-  constructor(readonly el:ElementRef) { }
+  constructor(readonly el: ElementRef) { }
 
 
   ngOnChanges(changes: SimpleChanges): void {
     /**songList发生变化时 刷新滚动面板 */
-    if(changes['data']){
+    if (changes.data){
       this.refreshScroll();
     }
 
@@ -45,11 +45,11 @@ export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
   }
 
   ngAfterViewInit(): void {
-    console.log('滚动高度',this.warpRef.nativeElement)
-    //设置滑动组件作用的外层组件
-    this.bs = new  BScroll(this.warpRef.nativeElement,{
-      scrollbar:{
-        interactive:false
+    console.log('滚动高度', this.warpRef.nativeElement);
+    // 设置滑动组件作用的外层组件
+    this.bs = new  BScroll(this.warpRef.nativeElement, {
+      scrollbar: {
+        interactive: false
       },
        mouseWheel: {
         speed: 20,
@@ -57,8 +57,8 @@ export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
         easeTime: 300
       }
     });
-    //scrollEnd 滚动结束
-    this.bs.on('scrollEnd',({ y }) => this.onScrollEnd.emit(y))
+    // scrollEnd 滚动结束
+    this.bs.on('scrollEnd', ({ y }) => this.onScrollEnd.emit(y));
   }
 
   ngOnInit(): void {
@@ -69,9 +69,9 @@ export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
   }
 
   refreshScroll(){
-    //利用timer 取代setTimeout;
-    timer(this.refreshDelay).subscribe(() => {this.refresh()});
-    //setTimeout(() => this.refresh(),this.refreshDelay)
+    // 利用timer 取代setTimeout;
+    timer(this.refreshDelay).subscribe(() => {this.refresh(); });
+    // setTimeout(() => this.refresh(),this.refreshDelay)
   }
 
   scrollToElement(...args) {
@@ -80,7 +80,7 @@ export class WyScrollComponent implements OnInit,AfterViewInit,OnChanges {
 
 
   scrollTo(...args) {
-    this.bs.scrollTo.apply(this.bs,args);
+    this.bs.scrollTo.apply(this.bs, args);
   }
 
 

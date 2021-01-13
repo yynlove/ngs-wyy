@@ -1,114 +1,114 @@
-//轮播图
+// 轮播图
 export type Banner = {
-  targerId :number;
-  url:string;
-  imageUrl:string;
-}
+  targerId: number;
+  url: string;
+  imageUrl: string;
+};
 
 // 热门标签
 export type HotTag = {
-  id:number;
-  name:string;
-  position:number;
-  useCount:number;
-}
+  id: number;
+  name: string;
+  position: number;
+  useCount: number;
+};
 
 
 
 // 歌手
-export type Singer ={
-  id:number;
-  name :string;
-  picUrl:string;
-  alias:string[];
-  albumSize:number;
-}
+export type Singer = {
+  id: number;
+  name: string;
+  picUrl: string;
+  alias: string[];
+  albumSize: number;
+};
 
 
-export type SingerDetail={
-  artist:Singer;
+export type SingerDetail= {
+  artist: Singer;
   hotSongs: Song[];
 
-}
+};
 
 
 
-//歌曲
-export type Song ={
-  id:number;
-  name:string;
-  url:string;
-  ar:Singer[];
-  al:{
-    id:number;
-    name:string;
-    picUrl:string;
+// 歌曲
+export type Song = {
+  id: number;
+  name: string;
+  url: string;
+  ar: Singer[];
+  al: {
+    id: number;
+    name: string;
+    picUrl: string;
   },
-  dt:number;
-}
+  dt: number;
+};
 
 
 
 
 // 歌单
 export type SongSheet = {
-  id:number;
-  name:string;
-  picUrl:string;
-  coverImgUrl:string;
-  playCount:number;
-  tags:string[];
-  createTime:number;
-  creator:{ nickname:string,avatarUrl:string };
-  description:string;
-  subscribedCount:number;
-  shareCount:number;
-  subscribed:boolean;
-  commentCount:number;
-  tracks:Song[];
-  userId:number;
-  
-  tracksCount:number;
-}
+  id: number;
+  name: string;
+  picUrl: string;
+  coverImgUrl: string;
+  playCount: number;
+  tags: string[];
+  createTime: number;
+  creator: { nickname: string, avatarUrl: string };
+  description: string;
+  subscribedCount: number;
+  shareCount: number;
+  subscribed: boolean;
+  commentCount: number;
+  tracks: Song[];
+  userId: number;
+
+  tracksCount: number;
+};
 
 
-//歌曲播放路径
-export type SongUrl ={
-  id:number;
-  url:string;
-}
+// 歌曲播放路径
+export type SongUrl = {
+  id: number;
+  url: string;
+};
 
 
 
 export type Lyric = {
-  lyric:string; //歌词
-  tlyric:string; //翻译歌词
+  lyric: string; // 歌词
+  tlyric: string; // 翻译歌词
 
-}
+};
 
 
-//歌单
-export type SheetList={
+// 歌单
+export type SheetList= {
   playlists: SongSheet[],
-  total:number
-}
+  total: number
+};
 
 
 
-export type SearchResult={
+export type SearchResult= {
 
-  artists?:Singer;
-  playlists?:SongSheet[];
-  songs?:Song[];
+  artists?: Singer;
+  playlists?: SongSheet[];
+  songs?: Song[];
 
-}
+};
 
-//退出返回数据
+// 退出返回数据
 export interface SampleBack extends AnyJson{
-  code:number;
+  code: number;
 }
 
 //
 export type AnyJson = {
-  [key:string] :any;
-}
+  [key: string]: any;
+};

@@ -3,24 +3,24 @@ import { WySliderStyle } from './wy-slider-type';
 
 @Component({
   selector: 'app-wy-slider-handle',
-  template:`<div class="wy-slider-handle" [ngStyle]="style"></div>`,
-  changeDetection:ChangeDetectionStrategy.OnPush
+  template: `<div class="wy-slider-handle" [ngStyle]="style"></div>`,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WySliderHandleComponent implements OnInit, OnChanges {
 
 
   @Input() wyVertical = false;
-  @Input() wyOffset :number;
+  @Input() wyOffset: number;
 
-  style:WySliderStyle = {};
+  style: WySliderStyle = {};
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  ngOnChanges(changes:SimpleChanges):void{
-    if(changes['wyOffset']){
-      this.style[this.wyVertical?'bottom':'left'] = this.wyOffset +'%';
+  ngOnChanges(changes: SimpleChanges): void{
+    if (changes.wyOffset){
+      this.style[this.wyVertical ? 'bottom' : 'left'] = this.wyOffset + '%';
     }
   }
 

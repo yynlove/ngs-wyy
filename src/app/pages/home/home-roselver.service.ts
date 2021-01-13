@@ -9,16 +9,16 @@ import { HomeService } from 'src/app/services/home.service';
 import { SingerService } from 'src/app/services/singer.service';
 
 
-type HomeDataType =[Banner[],HotTag[],SongSheet[],Singer[]]
+type HomeDataType = [Banner[], HotTag[], SongSheet[], Singer[]];
 
 @Injectable()
 export class HomeResolverService implements Resolve<HomeDataType> {
   constructor(
-    private homeServie:HomeService,
-    private singerService:SingerService) {}
+    private homeServie: HomeService,
+    private singerService: SingerService) {}
 
 
-  resolve():Observable<HomeDataType> {
+  resolve(): Observable<HomeDataType> {
 
     // const userId =this.storageService.getStorage('wyUserId');
     // let detail$ = of(null);

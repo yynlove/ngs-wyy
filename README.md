@@ -45,5 +45,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 2. npm install @better-scroll/scroll-bar --save
 3. npm install @better-scroll/mouse-wheel --save
 4. npm install --save @angular/material @angular/cdk @angular/animations
+### nodejs插件
+1. npm i express -D
+2. npm i http-proxy-middleware -D
 
 

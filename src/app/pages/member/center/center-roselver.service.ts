@@ -7,26 +7,26 @@ import { RecordVal, User, UserSheet } from 'src/app/services/data-types/member.t
 import { MemberServices, RecordType } from 'src/app/services/member.service';
 
 
-type CenterDataType =[User,RecordVal[],UserSheet]
+type CenterDataType = [User, RecordVal[], UserSheet];
 
 @Injectable()
 export class CenterResolverService implements Resolve<CenterDataType> {
   constructor(
-    private memberServices:MemberServices,
-    private router :Router) {}
+    private memberServices: MemberServices,
+    private router: Router) {}
 
 
-  resolve(route :ActivatedRouteSnapshot):Observable<CenterDataType> {
+  resolve(route: ActivatedRouteSnapshot): Observable<CenterDataType> {
 
     const uid = route.paramMap.get('id');
-    if(uid){
+    if (uid){
       return forkJoin([
         this.memberServices.getUserDetail(uid),
         this.memberServices.getUserRecord(uid),
         this.memberServices.getUserSheets(uid)
       ]).pipe(first());
     }else{
-      this.router.navigate(['/home'])
+      this.router.navigate(['/home']);
     }
 
 

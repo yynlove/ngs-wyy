@@ -10,9 +10,9 @@ import { memberReducer } from './reducers/member.reducer';
 @NgModule({
   declarations: [],
   imports: [
-    //注册playReducer
-    StoreModule.forRoot({player:playReducer,member:memberReducer},{
-      //配置项
+    // 注册playReducer
+    StoreModule.forRoot({player: playReducer, member: memberReducer}, {
+      // 配置项
       runtimeChecks: {
         strictStateImmutability: true,
         strictActionImmutability: true,
@@ -23,10 +23,10 @@ import { memberReducer } from './reducers/member.reducer';
       },
     }),
     StoreDevtoolsModule.instrument({
-      //记录20条
-      maxAge:20,
-      //生产模式下
-      logOnly:environment.production
+      // 记录20条
+      maxAge: 20,
+      // 生产模式下
+      logOnly: environment.production
 
     })
   ]

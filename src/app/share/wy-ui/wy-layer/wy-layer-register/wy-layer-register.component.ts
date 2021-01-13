@@ -27,24 +27,24 @@ export class WyLayerRegisterComponent implements OnInit {
   @Output() onRegister = new EventEmitter<number>();
 
   @Output() onChangeModalTypes = new EventEmitter<string>();
-  //验证码是否验证通过
+  // 验证码是否验证通过
   checkPass: string | boolean = '';
-  //表单数据
-  formModel:FormGroup;
-  //倒计时
-  timing:number;
-  //是否显示密码
-  showCode:boolean= false;
+  // 表单数据
+  formModel: FormGroup;
+  // 倒计时
+  timing: number;
+  // 是否显示密码
+  showCode = false;
   constructor(
-    private fb:FormBuilder,
-    private memberService:MemberServices,
-    private messageService:NzMessageService,
-    private cdr:ChangeDetectorRef
+    private fb: FormBuilder,
+    private memberService: MemberServices,
+    private messageService: NzMessageService,
+    private cdr: ChangeDetectorRef
     ) {
     this.formModel = this.fb.group({
-      phone:['',[Validators.required,Validators.pattern(/^1\d{10}$/)]],
-      password:['',[Validators.required,Validators.minLength(6)]],
-    })
+      phone: ['', [Validators.required, Validators.pattern(/^1\d{10}$/)]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+    });
    }
 
   ngOnInit(): void {
@@ -52,14 +52,14 @@ export class WyLayerRegisterComponent implements OnInit {
 
 
   onSubmit(){
-    if(this.formModel.valid){
+    if (this.formModel.valid){
       this.setCode();
     }
   }
   setCode() {
-    this.memberService.sendCode(this.formModel.value.phone).subscribe(res =>{
+    this.memberService.sendCode(this.formModel.value.phone).subscribe(res => {
       this.timing = 15;
-      if(!this.showCode){
+      if (!this.showCode){
         this.showCode = true;
       }
       this.cdr.markForCheck();
@@ -68,9 +68,9 @@ export class WyLayerRegisterComponent implements OnInit {
         this.cdr.markForCheck();
 
       });
-    },error=>{
-      this.messageService.error(error.massage|| "失败");
-    })
+    }, error => {
+      this.messageService.error(error.massage || '失败');
+    });
   }
 
   changeType(type = ModalTypes.Default){
@@ -79,15 +79,15 @@ export class WyLayerRegisterComponent implements OnInit {
     this.formModel.reset();
   }
 
-  //校验验证码
-  onCheckCode(code:number){
-    console.log("1111");
-    
-    this.memberService.checkCode(Number(this.formModel.value.phone),code).subscribe(res =>{
+  // 校验验证码
+  onCheckCode(code: number){
+    console.log('1111');
+
+    this.memberService.checkCode(Number(this.formModel.value.phone), code).subscribe(res => {
       this.checkPass = true;
-    },error=>{
+    }, error => {
       this.checkPass = false;
-    },()=>this.cdr.markForCheck())
+    }, () => this.cdr.markForCheck());
   }
 
 
@@ -95,8 +95,8 @@ export class WyLayerRegisterComponent implements OnInit {
    * 检查账户是否已存在
    */
   onCheckExist(){
-    const phone =Number(this.formModel.value.phone);
-    this.memberService.checkExist(phone).subscribe(res =>{
+    const phone = Number(this.formModel.value.phone);
+    this.memberService.checkExist(phone).subscribe(res => {
 
       if (Exist[res] === '存在') {
         this.messageService.error('账号已存在，可直接登陆');
@@ -104,7 +104,7 @@ export class WyLayerRegisterComponent implements OnInit {
       } else {
         this.onRegister.emit(phone);
       }
-    })
+    });
   }
 
 }

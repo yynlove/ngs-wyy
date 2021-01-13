@@ -6,25 +6,25 @@ import { RecordVal, User } from 'src/app/services/data-types/member.type';
 import { MemberServices } from 'src/app/services/member.service';
 
 
-type RecordDataType =[User,RecordVal[]]
+type RecordDataType = [User, RecordVal[]];
 
 @Injectable()
 export class RecordResolverService implements Resolve<RecordDataType> {
   constructor(
-    private memberServices:MemberServices,
-    private router :Router) {}
+    private memberServices: MemberServices,
+    private router: Router) {}
 
 
-  resolve(route :ActivatedRouteSnapshot):Observable<RecordDataType> {
+  resolve(route: ActivatedRouteSnapshot): Observable<RecordDataType> {
 
     const uid = route.paramMap.get('id');
-    if(uid){
+    if (uid){
       return forkJoin([
         this.memberServices.getUserDetail(uid),
         this.memberServices.getUserRecord(uid)
       ]).pipe(first());
     }else{
-      this.router.navigate(['/home'])
+      this.router.navigate(['/home']);
     }
 
 

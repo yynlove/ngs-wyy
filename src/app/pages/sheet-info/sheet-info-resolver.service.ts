@@ -7,7 +7,7 @@ import { SheetService } from 'src/app/services/sheet.service';
 @Injectable()
 export class SheetInfoResolverService implements Resolve<SongSheet>{
 
-  constructor(private sheetService:SheetService) { }
+  constructor(private sheetService: SheetService) { }
 
   resolve(route: ActivatedRouteSnapshot): Observable<SongSheet> {
 

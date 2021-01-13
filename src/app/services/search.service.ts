@@ -12,12 +12,12 @@ import {  Lyric, SearchResult, Song, SongUrl } from './data-types/common.type';
 })
 export class SearchService {
 
-  constructor(private httpClient:HttpClient, @Inject(API_CONFIG) private url:string ) { }
+  constructor(private httpClient: HttpClient, @Inject(API_CONFIG) private url: string ) { }
 
-  search(keywords:string):Observable<SearchResult>{
-    const params = new HttpParams().set('keywords',keywords);
-    return  this.httpClient.get(this.url + 'search/suggest',{params})
-          .pipe(map((res:{result:SearchResult}) =>res.result));
+  search(keywords: string): Observable<SearchResult>{
+    const params = new HttpParams().set('keywords', keywords);
+    return  this.httpClient.get(this.url + 'search/suggest', {params})
+          .pipe(map((res: {result: SearchResult}) => res.result));
   }
 
 }

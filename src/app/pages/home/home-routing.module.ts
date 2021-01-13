@@ -7,12 +7,12 @@ const routes: Routes = [
   /**
    * Resolve: 预先获取组件数据
    */
-  {path:'',component:HomeComponent,data:{title:'发现'},resolve:{homeDatas:HomeResolverService}}
+  {path: '', component: HomeComponent, data: {title: '发现'}, resolve: {homeDatas: HomeResolverService}}
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers:[HomeResolverService]
+  providers: [HomeResolverService]
 })
 export class HomeRoutingModule { }

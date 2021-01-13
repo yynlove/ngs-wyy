@@ -26,7 +26,7 @@ registerLocaleData(zh);
     ShareModule,
     AppRoutingModule,
   ],
-  exports:[
+  exports: [
     ShareModule,
     AppRoutingModule,
   ],
@@ -39,9 +39,9 @@ export class CoreModule {
    * @skipSelf 使用父组件的值
    * @Optional 防止为null 报错
    */
-  constructor(@SkipSelf() @Optional() parentModule:CoreModule){
-    if(parentModule){
-      throw new  Error('CoreModule只能被AppModule引入')
+  constructor(@SkipSelf() @Optional() parentModule: CoreModule){
+    if (parentModule){
+      throw new  Error('CoreModule只能被AppModule引入');
     }
 
 

@@ -9,15 +9,15 @@ import { SearchResult } from 'src/app/services/data-types/common.type';
 })
 export class WySearchPanelComponent implements OnInit {
 
-  searchResult:SearchResult;
+  searchResult: SearchResult;
 
-  constructor(private router:Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
 
-  //点击跳转
-  toInfo(path:[string,number]){
+  // 点击跳转
+  toInfo(path: [string, number]){
     this.router.navigate(path);
   }
 

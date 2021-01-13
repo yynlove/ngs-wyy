@@ -12,13 +12,13 @@ import { RecordType } from 'src/app/services/member.service';
 export class RecordsComponent implements OnInit {
 
 
-  @Input() records:RecordVal[];
+  @Input() records: RecordVal[];
   @Input() recordType =  RecordType.weekData;
   @Input() listenSongs;
   @Input() currentIndex = -1;
 
   @Output() onChangeType = new EventEmitter<RecordType>();
-  @Output() onAddSong = new EventEmitter<[Song,boolean]>();
+  @Output() onAddSong = new EventEmitter<[Song, boolean]>();
 
 
   constructor() { }

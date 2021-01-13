@@ -35,7 +35,7 @@ import { WyCodeComponent } from './wy-check-code/wy-code/wy-code.component';
     NzFormModule,
     FormsModule
   ],
-  exports:[
+  exports: [
     WyLayerModelComponent,
     WyLayerDefaultComponent,
     WyLayerLoginComponent,

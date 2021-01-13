@@ -5,19 +5,19 @@ import { SongSheet } from 'src/app/services/data-types/common.type';
   selector: 'app-single-sheet',
   templateUrl: './single-sheet.component.html',
   styleUrls: ['./single-sheet.component.less'],
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleSheetComponent implements OnInit {
 
-  @Input()  sheet:SongSheet;
+  @Input()  sheet: SongSheet;
 
-  @Output() onPlay=new EventEmitter<number>();
+  @Output() onPlay = new EventEmitter<number>();
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  playSheet(evt:MouseEvent,id:number){
+  playSheet(evt: MouseEvent, id: number){
     this.onPlay.emit(id);
     evt.stopPropagation();
   }
